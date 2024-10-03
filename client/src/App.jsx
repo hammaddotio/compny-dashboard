@@ -52,8 +52,10 @@ const App = () => {
             <Route path="/payment" element={<ProtectedRoute element={<PaymentStripe />} userOnly={true} />} />
           </>
 
-          <Route path="/sign-up" element={<ProtectedRoute element={<SignUp />} />} />
-          <Route path="/sign-in" element={<ProtectedRoute element={<SignIn />} />} />
+          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/sign-in" element={<SignIn />} />
+          {/* <Route path="/sign-up" element={<ProtectedRoute element={<SignUp />} />} />
+          <Route path="/sign-in" element={<ProtectedRoute element={<SignIn />} />} /> */}
           {/* <Route path="/sign-up" element={<ProtectedRoute element={<SignUp />} userOnly={false} adminOnly={false} />} />
           <Route path="/sign-in" element={<ProtectedRoute element={<SignIn />} userOnly={false} adminOnly={false} />} /> */}
           {/* <Route path="/login" element={<Login />} /> */}
