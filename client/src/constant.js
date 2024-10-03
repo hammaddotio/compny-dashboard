@@ -1,4 +1,5 @@
-export const URL = 'http://127.0.0.1:3000'
+// export const URL = 'http://127.0.0.1:3000'
+export const URL = 'https://sexual-maressa-mady-1d683dc3.koyeb.app'
 export const REGISTER_URL = '/api/register'
 export const LOGIN_URL = '/api/login'
 
