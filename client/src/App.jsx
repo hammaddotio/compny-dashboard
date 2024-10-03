@@ -44,7 +44,7 @@ const App = () => {
           <Route path="/scope-form" element={<ProtectedRoute element={<ScopeForm />} />} /> */}
 
           <>
-            <Route path="/dashboard" element={<ProtectedRoute element={<Home />} adminOnly={true} />} />
+            <Route path="/" element={<ProtectedRoute element={<Home />} adminOnly={true} />} />
             <Route path="/purchased-services" element={<ProtectedRoute element={<UserPurchasedServices />} userOnly={true} />} />
             <Route path="/billing" element={<ProtectedRoute element={<Billing />} adminOnly={true} />} />
             <Route path="/plans" element={<PlansList />} />
