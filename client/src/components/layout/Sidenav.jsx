@@ -254,6 +254,7 @@ function Sidenav({ color }) {
               <NavLink to="/sign-in" onClick={() => {
                 localStorage.removeItem('role')
                 localStorage.removeItem('token')
+                localStorage.removeItem('userId')
               }}>
                 <span
                   className="icon"

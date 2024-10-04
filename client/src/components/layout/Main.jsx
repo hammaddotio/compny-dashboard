@@ -6,10 +6,12 @@ import { Layout, Drawer, Affix } from "antd";
 import Sidenav from "./Sidenav";
 import Header from "./Header";
 import Footer from "./Footer";
+import Loading from "../extra/Loading";
+import Error from "../extra/Error";
 
 const { Header: AntHeader, Content, Sider } = Layout;
 
-function Main({ children }) {
+function Main({ children, loading = '', error = '' }) {
   const [visible, setVisible] = useState(false);
   const [placement, setPlacement] = useState("right");
   const [sidenavColor, setSidenavColor] = useState("#1890ff");
@@ -23,14 +25,6 @@ function Main({ children }) {
 
   let { pathname } = useLocation();
   pathname = pathname.replace("/", "");
-
-  useEffect(() => {
-    if (pathname === "rtl") {
-      setPlacement("left");
-    } else {
-      setPlacement("right");
-    }
-  }, [pathname]);
 
   return (
     <Layout
@@ -49,8 +43,7 @@ function Main({ children }) {
           } `}
       >
         <Layout
-          className={`layout-dashboard ${pathname === "rtl" ? "layout-dashboard-rtl" : ""
-            }`}
+          className={`layout-dashboard`}
         >
           <Sider
             trigger={null}
@@ -105,7 +98,10 @@ function Main({ children }) {
             />
           </AntHeader>
         )}
-        <Content className="content-ant">{children}</Content>
+        {
+          loading ? <Loading /> : error ? <Error error={error} /> : <Content className="content-ant">{children}</Content>
+        }
+
         <Footer />
       </Layout>
     </Layout>

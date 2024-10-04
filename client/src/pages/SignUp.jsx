@@ -118,7 +118,7 @@ const SignUp = () => {
   const onFinish = async (values) => {
     // Prepare login data to send in the API request
     const signUpData = {
-      email: values.email,
+      personal_email: values.email,
       username: values.username,
       password: values.password,
     };

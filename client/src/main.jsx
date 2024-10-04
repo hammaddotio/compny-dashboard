@@ -4,13 +4,16 @@ import App from './App.jsx'
 import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import PriceListContext from './context/PriceListContext.jsx'
+import CallApiContext from './context/CallApiAndUpdateState.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <PriceListContext>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </PriceListContext>
+    <BrowserRouter>
+      <CallApiContext>
+        <PriceListContext>
+          <App />
+        </PriceListContext>
+      </CallApiContext>
+    </BrowserRouter>
   </StrictMode>,
 )

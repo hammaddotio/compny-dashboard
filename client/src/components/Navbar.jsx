@@ -3,6 +3,7 @@ import React from 'react';
 import { Layout, Menu, Dropdown, Avatar, Button } from 'antd';
 import { HomeOutlined, BarChartOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
+import { redirectTo } from '../constant';
 
 const { Header } = Layout;
 
@@ -12,7 +13,7 @@ const Navbar = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('token'); // Remove token from localStorage
-        navigate('/login'); // Redirect to login page
+        navigate(redirectTo); // Redirect to login page
     };
 
     const menu = (

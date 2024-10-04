@@ -22,7 +22,7 @@ import {
   GithubOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
-import { LOGIN_URL, URL } from "../constant";
+import { LOGIN_URL, redirectTo, URL } from "../constant";
 
 
 function onChange(checked) {
@@ -113,9 +113,9 @@ const signin = [
 
 
 const SignIn = () => {
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const onFinish = async (values) => {
     // Prepare login data to send in the API request
@@ -131,10 +131,11 @@ const SignIn = () => {
       message.success('Login successful!');
       console.log('Success:', response.data);
       // Handle successful login (e.g., redirect, store token)
+
+      navigate(redirectTo);
       localStorage.setItem('token', response.data?.token);
       localStorage.setItem('role', response.data?.user_role);
-      // console.log(response.data?.user_role)
-      navigate('/dashboard');
+      console.log('logedin')
     } catch (error) {
       message.error('Login failed. Please check your credentials.');
       console.error('Error:', error);

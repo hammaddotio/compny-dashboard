@@ -46,8 +46,8 @@ export const auth_middleware = (roles) => async (req, res, next) => {
         console.log(user)
 
         // Check if the user's role is authorized
-        if (roles && !roles.includes(user?.user_role)) {
-            return res.status(403).json({ msg: 'Unauthorized user' })
+        if (roles && !roles?.includes(user?.user_role)) {
+            return res.status(403).json({ msg: 'Unauthorized user role' })
         }
         console.log(roles)
 

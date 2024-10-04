@@ -1,97 +1,82 @@
-import mongoose, { Schema, model } from 'mongoose';
+import mongoose from 'mongoose';
 
-// User Schema
-const userSchema = new Schema(
-    {
-        salutation: {
-            type: String,
-            enum: ['mr', 'mrs', 'miss', 'ms'],
-        },
-        username: {
-            type: String,
-            required: true,
-            unique: true,  // Optional: Ensure usernames are unique
-            trim: true
-        },
-        first_name: {
-            type: String,
-            // required: true,
-            trim: true
-        },
-        last_name: {
-            type: String,
-            // required: true,
-            trim: true
-        },
-        email: {
-            type: String,
-            unique: true,
-            required: true,
-            lowercase: true,  // Normalize to lowercase
-            trim: true
-        },
-        phone_number: {
-            type: String,
-            // required: true
-        },
-        password: {
-            type: String,
-            required: true
-        },
-        birthday: {
-            type: Date
-        },
-        street: {
-            type: String,
-            // required: true,
-            trim: true
-        },
-        city: {
-            type: String,
-            // required: true,
-            trim: true
-        },
-        state: {
-            type: String,
-            // required: true,
-            trim: true
-        },
-        zip: {
-            type: String,
-            // required: true
-        },
-        country: {
-            type: String,
-            // required: true,
-            trim: true
-        },
-        referral: {
-            type: String,
-            trim: true
-        },
-        user_role: {
-            type: String,
-            default: 'US',
-            enum: ['US', 'AD'] // Example roles
-        },
-        status: {
-            type: String,
-            enum: ['active', 'inactive'], // Define valid statuses
-            default: 'active'
-        },
-        // Reference to the Subscription model
-        subscription: {
-            type: Schema.Types.ObjectId,
-            ref: 'Subscription'
-        },
-        purchasedServices: [{
-            type: Schema.Types.ObjectId,
-            ref: 'ServicePlan'
-        }],
+const userSchema = new mongoose.Schema({
+    client_name: {
+        type: String,
+        required: true // Assuming you want this to be required as well
     },
-    {
-        timestamps: true
+    company_name: {
+        type: String,
+        required: true // Assuming you want this to be required as well
+    },
+    contact_person: {
+        type: String,
+        required: false // Optional
+    },
+    official_email: {
+        type: String,
+        required: true,
+        unique: true // Assuming you want unique official emails
+    },
+    personal_email: {
+        type: String,
+        required: true // Making personal_email required
+    },
+    phone_number: {
+        type: String,
+        required: false // Optional
+    },
+    address: {
+        type: String,
+        required: false // Optional
+    },
+    website_url: {
+        type: String,
+        required: false // Optional
+    },
+    industry: {
+        type: String,
+        required: false // Optional
+    },
+    username: {
+        type: String,
+        required: true, // Making username required
+        unique: true // Assuming you want unique usernames
+    },
+    password: {
+        type: String,
+        required: true // Making password required
+    },
+    user_role: {
+        type: String,
+        default: 'US',
+        enum: ['US', 'AD'] // Example roles
+    },
+    status: {
+        type: String,
+        enum: ['active', 'inactive'],
+        default: 'active'
+    },
+    subscription: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Subscription'
+    },
+    purchasedServices: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ServicePlan'
+    },
+    // Optional fields for added functionality
+    profile_picture: {
+        type: String, // URL or path to profile picture
+        default: `https://w7.pngwing.com/pngs/419/473/png-transparent-computer-icons-user-profile-login-user-heroes-sphere-black-thumbnail.png`
+    },
+    account_type: {
+        type: String,
+        enum: ['personal', 'business'], // Example account types
+        default: 'personal'
     }
-);
+});
 
-export const User = model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+
+export { User };

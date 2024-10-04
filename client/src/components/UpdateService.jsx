@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Modal, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import moment from 'moment';
-import { authHeaders, CREATE_SERVICE_API, URL } from '../constant';
+import { authHeaders, UPDATE_SERVICE_API, URL } from '../constant';
+import { EditOutlined } from '@ant-design/icons';
 
-const AddNewService = ({ fetchServicePlans }) => {
+const UpdateService = ({ fetchServicePlans, selectedPlan }) => {
     const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
@@ -14,15 +14,22 @@ const AddNewService = ({ fetchServicePlans }) => {
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [services, setServices] = useState([]);
-    const [createdPlan, setCreatedPlan] = useState(null); // For displaying the plan after creation
-
-    // Error states
     const [errors, setErrors] = useState({
         name: '',
         description: '',
         price: '',
         services: ''
     });
+
+    // Prefill fields when a plan is selected for updating
+    useEffect(() => {
+        if (selectedPlan) {
+            setName(selectedPlan.name);
+            setDescription(selectedPlan.description);
+            setPrice(selectedPlan.price);
+            setServices(selectedPlan.services);
+        }
+    }, [selectedPlan]);
 
     const showModal = () => {
         setOpen(true);
@@ -36,53 +43,38 @@ const AddNewService = ({ fetchServicePlans }) => {
             services: ''
         };
 
-        if (!name) {
-            newErrors.name = 'Please enter the plan name.';
-        }
-        if (!description) {
-            newErrors.description = 'Please enter the plan description.';
-        }
-        if (!price || isNaN(price)) {
-            newErrors.price = 'Please enter a valid price.';
-        }
-        if (services.length === 0) {
-            newErrors.services = 'Please enter at least one service.';
-        }
+        if (!name) newErrors.name = 'Please enter the plan name.';
+        if (!description) newErrors.description = 'Please enter the plan description.';
+        if (!price || isNaN(price)) newErrors.price = 'Please enter a valid price.';
+        if (services.length === 0) newErrors.services = 'Please enter at least one service.';
 
         setErrors(newErrors);
         return Object.values(newErrors).every((error) => !error);
     };
 
     const handleOk = async () => {
-        if (!validateFields()) {
-            return;
-        }
+        if (!validateFields()) return;
 
         setConfirmLoading(true);
 
-        const selectedPlan = {
+        const updatedPlan = {
             name,
             description,
             price,
             services,
         };
-        console.log(selectedPlan)
 
         try {
-            // API call to create a new service plan
-            const response = await axios.post(`${URL}${CREATE_SERVICE_API}`, selectedPlan, authHeaders);  // Adjust the API endpoint
-            console.log('created plan', response)
+            const response = await axios.patch(`${URL}${UPDATE_SERVICE_API}/${selectedPlan._id}`, updatedPlan, authHeaders);
 
-            if (response.status === 201) {
-                setCreatedPlan(response?.data); // Store created plan details for display
-                // localStorage.setItem('selectedPlan', JSON.stringify(response.data));
+            if (response.status === 200) {
                 setConfirmLoading(false);
                 setOpen(false);
-                navigate(redirectTo); // Navigate to the payment page after plan creation
-                fetchServicePlans()
+                fetchServicePlans(); // Refetch plans to reflect the update
+                navigate('/plans');
             }
         } catch (error) {
-            console.error('Error creating plan:', error);
+            console.error('Error updating plan:', error);
             setConfirmLoading(false);
         }
     };
@@ -94,14 +86,15 @@ const AddNewService = ({ fetchServicePlans }) => {
     return (
         <>
             <Button
+                classNames={''}
+                icon={<EditOutlined />}
                 type="button"
-                variant='filled'
                 onClick={showModal}
-            >
-                ADD NEW PLAN +
-            </Button>
+                size="middle"
+            />
+
             <Modal
-                title={'Add New Service Plan'}
+                title="Update Plan"
                 open={open}
                 onOk={handleOk}
                 confirmLoading={confirmLoading}
@@ -164,4 +157,4 @@ const AddNewService = ({ fetchServicePlans }) => {
     );
 };
 
-export default AddNewService;
+export default UpdateService;

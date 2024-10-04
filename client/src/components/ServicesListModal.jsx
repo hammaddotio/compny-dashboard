@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Modal, List } from 'antd';
+import { Button, Modal, List, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { usePriceList } from '../context/PriceListContext';
+import { checkToken } from '../constant';
+import { checkUserRole } from './../constant';
 
 const ServicesListModal = ({ selectedPlan }) => {
     const navigate = useNavigate()
@@ -23,7 +25,18 @@ const ServicesListModal = ({ selectedPlan }) => {
             localStorage.setItem('selectedPlan', JSON.stringify(selectedPlan))
             setOpen(false);
             setConfirmLoading(false);
-            localStorage.getItem('token') ? navigate('/payment') : navigate('/sign-in')
+
+            if (checkToken && checkUserRole === 'US') {
+                navigate('/payment');
+            } else if (checkToken && checkUserRole === 'AD') {
+                message.warning('Need To LoggedIn as a User Before Buy Our Plan');
+                navigate('/dashboard');
+            } else {
+                message.warning('Need To LoggedIn Before Buy Our Plan');
+                navigate('/sign-in');
+
+            }
+
         }, 2000);
     };
     const handleCancel = () => {

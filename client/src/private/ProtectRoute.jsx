@@ -30,28 +30,27 @@ import { checkToken, checkUserRole } from '../constant'; // Assuming these are f
 // };
 
 const ProtectedRoute = ({ element, adminOnly = false, userOnly = false }) => {
-    // Check if token is valid
-    const tokenValid = checkToken
-    const userRole = checkUserRole // Assuming checkUserRole returns the role like 'US' or 'AD'
+    const token = checkToken;
+    const userRole = checkUserRole;
 
-    if (!tokenValid) {
-        // If not authenticated, redirect to sign-in
+    // Redirect to login if no token is found
+    if (!token) {
         return <Navigate to="/sign-in" replace />;
     }
 
-    // Admin-only routes
+    // Admin-only routes logic
     if (adminOnly && userRole !== 'AD') {
-        // If a non-admin tries to access an admin-only route, redirect to a user page
+        // Redirect non-admin users to user plans page
         return <Navigate to="/plans" replace />;
     }
 
-    // User-only routes
-    if (adminOnly && userRole !== 'AD') {
-        // If an admin tries to access a user-only route, redirect to the dashboard
+    // User-only routes logic
+    if (userOnly && userRole !== 'US') {
+        // Redirect admins to dashboard if trying to access user-only routes
         return <Navigate to="/dashboard" replace />;
     }
 
-    // If role matches, render the component
+    // If none of the above, render the component
     return element;
 };
 

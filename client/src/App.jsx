@@ -44,16 +44,24 @@ const App = () => {
           <Route path="/scope-form" element={<ProtectedRoute element={<ScopeForm />} />} /> */}
 
           <>
+            {/* Admin-Only Routes */}
             <Route path="/" element={<ProtectedRoute element={<Home />} adminOnly={true} />} />
-            <Route path="/purchased-services" element={<ProtectedRoute element={<UserPurchasedServices />} userOnly={true} />} />
             <Route path="/billing" element={<ProtectedRoute element={<Billing />} adminOnly={true} />} />
-            <Route path="/plans" element={<PlansList />} />
-            <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
+
+            {/* User-Only Routes */}
+            <Route path="/purchased-services" element={<ProtectedRoute element={<UserPurchasedServices />} userOnly={true} />} />
             <Route path="/payment" element={<ProtectedRoute element={<PaymentStripe />} userOnly={true} />} />
+
+            {/* Mixed Role Routes */}
+            {/* <Route path="/profile" element={<ProtectedRoute element={<Profile />} userOnly={true} adminOnly={true} />} /> */}
+            <Route path="/profile" element={<Profile />} />
+
+            {/* Public Routes */}
+            <Route path="/plans" element={<PlansList />} />
+            <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/sign-in" element={<SignIn />} />
           </>
 
-          <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/sign-in" element={<SignIn />} />
           {/* <Route path="/sign-up" element={<ProtectedRoute element={<SignUp />} />} />
           <Route path="/sign-in" element={<ProtectedRoute element={<SignIn />} />} /> */}
           {/* <Route path="/sign-up" element={<ProtectedRoute element={<SignUp />} userOnly={false} adminOnly={false} />} />

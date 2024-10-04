@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
-import { Row, Col, Card, Button, Modal } from "antd";
+import { Row, Col, Card, Button } from "antd";
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import BgProfile from "../assets/images/bg-profile.jpg";
 import Main from '../components/layout/Main';
-import { URL, ALL_PLANS_API, authHeaders, checkToken, checkUserRole } from './../constant';
+import { URL, ALL_PLANS_API, authHeaders, checkToken, checkUserRole, DELETE_SERVICE_API, UPDATE_SERVICE_API } from './../constant';
 import axios from "axios";
 import ServicesListModal from './../components/ServicesListModal';
 import AddNewService from './../components/AddNewService';
-import { useLocation } from "react-router-dom";
+import { useCallApi } from "../context/CallApiAndUpdateState";
+import UpdateService from './../components/UpdateService';
 
 const PlansList = () => {
+  const { getUser } = useCallApi();
+
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,9 +20,10 @@ const PlansList = () => {
   // Fetch plans data from the API
   const fetchServicePlans = async () => {
     try {
-      const response = await axios.get(`${URL}${ALL_PLANS_API}`, authHeaders);
+      const response = await axios.get(`${URL}${ALL_PLANS_API}`);
       setPlans(response.data); // Assuming the API returns an array of plans
       setLoading(false);
+      // getUser();
     } catch (error) {
       setError('Failed to load plans.');
       setLoading(false);
@@ -28,30 +32,35 @@ const PlansList = () => {
 
   useEffect(() => {
     fetchServicePlans();
-  }, [checkToken]);
+  }, []); // Plans as a dependency to ensure re-fetching when plans are updated
 
   // Handle delete
   const handleDelete = async (planId) => {
     try {
-      await axios.delete(`${URL}${ALL_PLANS_API}/${planId}`, authHeaders);
-      setPlans(plans.filter(plan => plan.id !== planId)); // Assuming plan has a unique 'id'
+      await axios.delete(`${URL}${DELETE_SERVICE_API}/${planId}`, authHeaders);
+      fetchServicePlans(); // Refetch the plans after delete operation
+      console.log('deleted')
     } catch (error) {
       setError('Failed to delete the plan.');
     }
   };
 
-  // Handle update (Assuming you have a form or modal to update the plan)
-  const handleUpdate = (plan) => {
-    // You can open a modal with a form to update the plan
-    // For simplicity, let's assume it shows the plan details
-    console.log('Update plan:', plan);
+  // Handle update
+  const handleUpdate = async (updatedPlan) => {
+    try {
+      await axios.put(`${URL}${UPDATE_SERVICE_API}/${updatedPlan._id}`, updatedPlan, authHeaders);
+      fetchServicePlans(); // Refetch plans after update
+    } catch (error) {
+      setError('Failed to update the plan.');
+    }
   };
 
+  // Render loading or error state
   // if (loading) return <p>Loading plans...</p>;
   // if (error) return <p>{error}</p>;
 
   return (
-    <Main>
+    <Main loading={loading} error={error}>
       <div
         className="profile-nav-bg"
         style={{ backgroundImage: "url(" + BgProfile + ")" }}
@@ -97,16 +106,17 @@ const PlansList = () => {
                   </Col>
                   {
                     checkToken && checkUserRole === 'AD' && (
-                      <Col span={12} className="flex justify-end">
-                        <Button
+                      <Col span={12} className="flex justify-end gap-2">
+                        {/* <Button
                           icon={<EditOutlined />}
                           onClick={() => handleUpdate(p)}
                           size="small"
-                        />
+                        /> */}
+                        <UpdateService fetchServicePlans={fetchServicePlans} selectedPlan={p} />
                         <Button
                           icon={<DeleteOutlined />}
-                          onClick={() => handleDelete(p.id)}
-                          size="small"
+                          onClick={() => handleDelete(p._id)}
+                          size="middle"
                           danger
                         />
                       </Col>

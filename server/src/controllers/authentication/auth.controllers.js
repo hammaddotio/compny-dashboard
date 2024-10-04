@@ -111,4 +111,3 @@ export const login = async (req, res) => {
         res.status(500).json({ error: 'An internal server error occurred' });
     }
 };
-

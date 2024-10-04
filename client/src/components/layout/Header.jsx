@@ -28,6 +28,7 @@ import { NavLink, Link } from "react-router-dom";
 import styled from "styled-components";
 import avtar from "../../assets/images/team-2.jpg";
 import { signOut } from "../../handlers/authHandler";
+import { checkToken } from "../../constant";
 
 const ButtonContainer = styled.div`
   .ant-btn-primary {
@@ -253,12 +254,6 @@ function Header({
 
   const [visible, setVisible] = useState(false);
   const [sidenavType, setSidenavType] = useState("transparent");
-  const [token, setToken] = useState('')
-
-  const getToken = localStorage.getItem('token')
-  useEffect(() => {
-    !token && setToken(getToken)
-  }, [token])
 
 
   useEffect(() => window.scrollTo(0, 0));
@@ -412,7 +407,7 @@ function Header({
             </div>
           </Drawer>
           {
-            token ?
+            checkToken ?
               (
                 <>
                   <Link to="/sign-in" onClick={signOut} className="btn-sign-in flex justify-center items-center">

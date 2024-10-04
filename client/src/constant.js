@@ -1,5 +1,5 @@
-// export const URL = 'http://127.0.0.1:3000'
-export const URL = 'https://sexual-maressa-mady-1d683dc3.koyeb.app'
+export const URL = 'http://127.0.0.1:3000'
+// export const URL = 'https://sexual-maressa-mady-1d683dc3.koyeb.app'
 export const REGISTER_URL = '/api/register'
 export const LOGIN_URL = '/api/login'
 
@@ -10,6 +10,11 @@ export const PAYMENT_PAYPAL = '/api/payment/paypal'
 export const SERVICE_PURCHASE_API = '/api/service-purchases'
 export const ALL_PLANS_API = '/api/services';
 export const CREATE_SERVICE_API = '/api/create-service';
+export const DELETE_SERVICE_API = '/api/delete-service';
+export const UPDATE_SERVICE_API = '/api/update-service';
+
+export const GET_USER_API = '/api/user';
+export const GET_USER_SERVICES_PURCHASES_API = '/api/service-purchases';
 
 
 export const checkUserRole = localStorage.getItem('role')
@@ -21,5 +26,6 @@ export const authHeaders = {
     }
 }
 
+export const redirectTo = location.state?.from?.pathname || '/';
 
 // do you want to multiple entries 

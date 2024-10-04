@@ -9,7 +9,7 @@
   =========================================================
   * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Row,
@@ -43,16 +43,65 @@ import project1 from "../assets/images/home-decor-1.jpeg";
 import project2 from "../assets/images/home-decor-2.jpeg";
 import project3 from "../assets/images/home-decor-3.jpeg";
 import Main from "../components/layout/Main";
+import { useCallApi } from "../context/CallApiAndUpdateState";
+
+import axios from "axios"
+import { authHeaders, GET_USER_API, GET_USER_SERVICES_PURCHASES_API, URL } from "../constant"
 
 function Profile() {
+  // const { getUser, user } = useCallApi()
+
   const [imageURL, setImageURL] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [purchases, setPurchases] = useState(null);
 
-  const getBase64 = (img, callback) => {
-    const reader = new FileReader();
-    reader.addEventListener("load", () => callback(reader.result));
-    reader.readAsDataURL(img);
+  const getUser = async () => {
+    try {
+      const response = await axios.get(`${URL}${GET_USER_API}`, authHeaders);
+      const user = response.data.user;
+      console.log("User Data:", user);  // Log user data
+      setUserId(user._id);
+      setUser(user);
+    } catch (error) {
+      console.log('Error fetching user:', error);
+      setError(error?.response?.data?.message);
+    }
   };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const userPurchases = async () => {
+    if (!userId) return; // Only proceed if userId is available
+
+    try {
+      console.log("Fetching purchases for userId:", userId);  // Log userId
+
+      const response = await axios.get(`${URL}${GET_USER_SERVICES_PURCHASES_API}/${userId}`, authHeaders);
+      const purchases = response.data;
+
+      console.log("Purchases Data:", purchases);  // Log API response for purchases
+      setPurchases(purchases)
+      if (purchases.length === 0) {
+        console.log('No purchases found for this user');
+      }
+    } catch (error) {
+      console.log('Error fetching purchases:', error);
+      setError(error?.response?.data?.message);
+    }
+  };
+
+  useEffect(() => {
+    // setInterval(() => {
+    if (userId) {
+      userPurchases();
+    }
+    // }, 1000)
+  }, [userId]);
 
   const beforeUpload = (file) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
@@ -64,19 +113,6 @@ function Profile() {
       message.error("Image must smaller than 2MB!");
     }
     return isJpgOrPng && isLt2M;
-  };
-
-  const handleChange = (info) => {
-    if (info.file.status === "uploading") {
-      setLoading(false);
-      return;
-    }
-    if (info.file.status === "done") {
-      getBase64(info.file.originFileObj, (imageUrl) => {
-        setLoading(false);
-        setImageURL(false);
-      });
-    }
   };
 
   const pencil = [
@@ -99,67 +135,9 @@ function Profile() {
     </svg>,
   ];
 
-  const uploadButton = (
-    <div className="ant-upload-text font-semibold text-dark">
-      {<VerticalAlignTopOutlined style={{ width: 20, color: "#000" }} />}
-      <div>Upload New Project</div>
-    </div>
-  );
-
-  const data = [
-    {
-      title: "Sophie B.",
-      avatar: convesionImg,
-      description: "Hi! I need more information…",
-    },
-    {
-      title: "Anne Marie",
-      avatar: convesionImg2,
-      description: "Awesome work, can you…",
-    },
-    {
-      title: "Ivan",
-      avatar: convesionImg3,
-      description: "About files I can…",
-    },
-    {
-      title: "Peterson",
-      avatar: convesionImg4,
-      description: "Have a great afternoon…",
-    },
-    {
-      title: "Nick Daniel",
-      avatar: convesionImg5,
-      description: "Hi! I need more information…",
-    },
-  ];
-
-  const project = [
-    {
-      img: project1,
-      titlesub: "Project #1",
-      title: "Modern",
-      disciption:
-        "As Uber works through a huge amount of internal management turmoil.",
-    },
-    {
-      img: project2,
-      titlesub: "Project #2",
-      title: "Scandinavian",
-      disciption:
-        "Music is something that every person has his or her own specific opinion about.",
-    },
-    {
-      img: project3,
-      titlesub: "Project #3",
-      title: "Minimalist",
-      disciption:
-        "Different people have different taste, and various types of music, Zimbali Resort",
-    },
-  ];
 
   return (
-    <Main>
+    <Main loading={loading} error={error} >
       <div
         className="profile-nav-bg"
         style={{ backgroundImage: "url(" + BgProfile + ")" }}
@@ -172,10 +150,10 @@ function Profile() {
           <Row justify="space-between" align="middle" gutter={[24, 0]}>
             <Col span={24} md={12} className="col-info">
               <Avatar.Group>
-                <Avatar size={74} shape="square" src={profilavatar} />
+                <Avatar size={74} shape="square" src={user?.profile_picture} />
 
                 <div className="avatar-info">
-                  <h4 className="font-semibold m-0">Sarah Jacob</h4>
+                  <h4 className="font-semibold m-0">{user?.username}</h4>
                   <p>CEO / Co-Founder</p>
                 </div>
               </Avatar.Group>
@@ -189,18 +167,18 @@ function Profile() {
                 justifyContent: "flex-end",
               }}
             >
-              <Radio.Group defaultValue="a">
+              {/* <Radio.Group defaultValue="a">
                 <Radio.Button value="a">OVERVIEW</Radio.Button>
                 <Radio.Button value="b">TEAMS</Radio.Button>
                 <Radio.Button value="c">PROJECTS</Radio.Button>
-              </Radio.Group>
+              </Radio.Group> */}
             </Col>
           </Row>
         }
       ></Card>
 
       <Row gutter={[24, 0]}>
-        <Col span={24} md={8} className="mb-24 ">
+        {/* <Col span={24} md={8} className="mb-24 ">
           <Card
             bordered={false}
             className="header-solid h-full"
@@ -242,7 +220,7 @@ function Profile() {
               </li>
             </ul>
           </Card>
-        </Col>
+        </Col> */}
         <Col span={24} md={8} className="mb-24">
           <Card
             bordered={false}
@@ -251,42 +229,28 @@ function Profile() {
             extra={<Button type="link">{pencil}</Button>}
             bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
           >
-            <p className="text-dark">
-              {" "}
-              Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer
-              is no. If two equally difficult paths, choose the one more painful
-              in the short term (pain avoidance is creating an illusion of
-              equality).{" "}
-            </p>
+
             <hr className="my-25" />
-            <Descriptions title="Oliver Liam">
+            <Descriptions title="">
               <Descriptions.Item label="Full Name" span={3}>
-                Sarah Emily Jacob
+                {user?.username}
               </Descriptions.Item>
               <Descriptions.Item label="Mobile" span={3}>
-                (44) 123 1234 123
+                {user?.phone_number}
               </Descriptions.Item>
               <Descriptions.Item label="Email" span={3}>
-                sarahjacob@mail.com
+                {user?.personal_email}
               </Descriptions.Item>
               <Descriptions.Item label="Location" span={3}>
-                USA
+                {user?.address}
               </Descriptions.Item>
-              <Descriptions.Item label="Social" span={3}>
-                <a href="#pablo" className="mx-5 px-5">
-                  {<TwitterOutlined />}
-                </a>
-                <a href="#pablo" className="mx-5 px-5">
-                  {<FacebookOutlined style={{ color: "#344e86" }} />}
-                </a>
-                <a href="#pablo" className="mx-5 px-5">
-                  {<InstagramOutlined style={{ color: "#e1306c" }} />}
-                </a>
+              <Descriptions.Item label="Website" span={3}>
+                {user?.website}
               </Descriptions.Item>
             </Descriptions>
           </Card>
         </Col>
-        <Col span={24} md={8} className="mb-24">
+        {/* <Col span={24} md={8} className="mb-24">
           <Card
             bordered={false}
             title={<h6 className="font-semibold m-0">Conversations</h6>}
@@ -311,62 +275,47 @@ function Profile() {
               )}
             />
           </Card>
-        </Col>
+        </Col> */}
       </Row>
       <Card
         bordered={false}
         className="header-solid mb-24"
         title={
           <>
-            <h6 className="font-semibold">Projects</h6>
-            <p>Architects design houses</p>
+            <h6 className="font-semibold">Buy Plan</h6>
+            {/* <p>Architects design houses</p> */}
           </>
         }
       >
+
+
         <Row gutter={[24, 24]}>
-          {project.map((p, index) => (
+          {purchases?.map((p, index) => (
             <Col span={24} md={12} xl={6} key={index}>
               <Card
                 bordered={false}
                 className="card-project"
-                cover={<img alt="example" src={p.img} />}
+              // cover={<img alt="example" src={p?.img} />}
               >
-                <div className="card-tag">{p.titlesub}</div>
-                <h5>{p.titile}</h5>
-                <p>{p.disciption}</p>
+                {/* <div className="card-tag">{p?.titlesub}</div> */}
+                <h5>{Date(p?.purchaseDate).normalize()}</h5>
+                <p>{p?.expiryDate}</p>
                 <Row gutter={[6, 0]} className="card-footer">
                   <Col span={12}>
                     <Button type="button">VIEW PROJECT</Button>
                   </Col>
-                  <Col span={12} className="text-right">
+                  {/* <Col span={12} className="text-right">
                     <Avatar.Group className="avatar-chips">
                       <Avatar size="small" src={profilavatar} />
                       <Avatar size="small" src={convesionImg} />
                       <Avatar size="small" src={convesionImg2} />
                       <Avatar size="small" src={convesionImg3} />
                     </Avatar.Group>
-                  </Col>
+                  </Col> */}
                 </Row>
               </Card>
             </Col>
           ))}
-          <Col span={24} md={12} xl={6}>
-            <Upload
-              name="avatar"
-              listType="picture-card"
-              className="avatar-uploader projects-uploader"
-              showUploadList={false}
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              beforeUpload={beforeUpload}
-              onChange={handleChange}
-            >
-              {imageURL ? (
-                <img src={imageURL} alt="avatar" style={{ width: "100%" }} />
-              ) : (
-                uploadButton
-              )}
-            </Upload>
-          </Col>
         </Row>
       </Card>
     </Main>
