@@ -7,6 +7,6 @@ export const user_router = express.Router()
 user_router.get('/api/get-all-users', auth_middleware(['AD']), get_all_users)
 user_router.patch('/api/update-user/:id', auth_middleware(['AD', 'US']), update_user)
 user_router.delete('/api/delete-user/:id', auth_middleware(['AD', 'US']), delete_user)
-user_router.get('/api/get-user/:id', auth_middleware(['AD', 'US']), get_user)
+user_router.get('/api/get-user/:id', auth_middleware(['AD']), get_user)
 
 user_router.get('/api/user', auth_middleware(['AD', 'US']), getUserProfile)

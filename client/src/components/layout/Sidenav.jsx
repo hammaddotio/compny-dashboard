@@ -215,8 +215,37 @@ function Sidenav({ color }) {
                 <span className="label">Billing</span>
               </NavLink>
             </Menu.Item>
+
+            <Menu.Item key="3">
+              <NavLink to="/tickets">
+                <span
+                  className="icon"
+                  style={{
+                    background: page === "tickets" ? color : "",
+                  }}
+                >
+                  {billing}
+                </span>
+                <span className="label">Tickets</span>
+              </NavLink>
+            </Menu.Item>
           </>
         }
+
+        <Menu.Item key='9'>
+          <NavLink to="/user-dashboard">
+            <span
+              className="icon"
+              style={{
+                background: page === "user-dashboard" ? color : "",
+              }}
+            >
+              {dashboard}
+            </span>
+            <span className="label">Dashboard</span>
+          </NavLink>
+        </Menu.Item>
+
         <Menu.Item key="4">
           <NavLink to="/plans">
             <span
@@ -230,6 +259,7 @@ function Sidenav({ color }) {
             <span className="label">Plans</span>
           </NavLink>
         </Menu.Item>
+
         {
           isLoggedIn &&
           <>

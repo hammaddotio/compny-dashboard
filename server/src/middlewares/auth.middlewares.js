@@ -46,7 +46,7 @@ export const auth_middleware = (roles) => async (req, res, next) => {
         console.log(user)
 
         // Check if the user's role is authorized
-        if (roles && !roles?.includes(user?.user_role)) {
+        if (roles && !roles.includes(user?.user_role)) {
             return res.status(403).json({ msg: 'Unauthorized user role' })
         }
         console.log(roles)
@@ -62,3 +62,23 @@ export const auth_middleware = (roles) => async (req, res, next) => {
         return res.status(500).json({ error: 'Internal server error' }); // Handle errors gracefully
     }
 };
+
+export const check_plan_buyer_or_not_middleware = () => async (req, res, next) => {
+    try {
+        const userId = req.user_id;
+        const userRole = req.user_role;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' })
+        }
+        console.log(user)
+
+
+        // Proceed to the next middleware or route handler
+        next();
+    } catch (error) {
+        console.error('Authentication error:', error); // Log the error for debugging
+        return res.status(500).json({ error: 'Internal server error' }); // Handle errors gracefully
+    }
+}

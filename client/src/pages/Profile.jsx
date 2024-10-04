@@ -1,14 +1,3 @@
-/*!
-  =========================================================
-  * Muse Ant Design Dashboard - v1.0.0
-  =========================================================
-  * Product Page: https://www.creative-tim.com/product/muse-ant-design-dashboard
-  * Copyright 2021 Creative Tim (https://www.creative-tim.com)
-  * Licensed under MIT (https://github.com/creativetimofficial/muse-ant-design-dashboard/blob/main/LICENSE.md)
-  * Coded by Creative Tim
-  =========================================================
-  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 import { useEffect, useState } from "react";
 
 import {
@@ -16,42 +5,107 @@ import {
   Col,
   Card,
   Button,
-  List,
   Descriptions,
   Avatar,
-  Radio,
-  Switch,
-  Upload,
-  message,
 } from "antd";
 
-import {
-  FacebookOutlined,
-  TwitterOutlined,
-  InstagramOutlined,
-  VerticalAlignTopOutlined,
-} from "@ant-design/icons";
-
 import BgProfile from "../assets/images/bg-profile.jpg";
-import profilavatar from "../assets/images/face-1.jpg";
-import convesionImg from "../assets/images/face-3.jpg";
-import convesionImg2 from "../assets/images/face-4.jpg";
-import convesionImg3 from "../assets/images/face-5.jpeg";
-import convesionImg4 from "../assets/images/face-6.jpeg";
-import convesionImg5 from "../assets/images/face-2.jpg";
-import project1 from "../assets/images/home-decor-1.jpeg";
-import project2 from "../assets/images/home-decor-2.jpeg";
-import project3 from "../assets/images/home-decor-3.jpeg";
 import Main from "../components/layout/Main";
 import { useCallApi } from "../context/CallApiAndUpdateState";
 
 import axios from "axios"
 import { authHeaders, GET_USER_API, GET_USER_SERVICES_PURCHASES_API, URL } from "../constant"
 
+
+
+import { Table, Typography } from 'antd';
+import EditUserInfo from "../components/EditUserInfo";
+
+const { Title } = Typography;
+
+
+const PurchaseTable = ({ purchases, setPurchases, userId }) => {
+  const columns = [
+    {
+      title: "SERVICE PLAN",
+      dataIndex: "servicePlan",
+      key: "servicePlan",
+      width: 200,
+      render: (servicePlan) => (
+        <div className="p-2">
+          <Title level={5} className="text-base md:text-lg">
+            {servicePlan?.name}
+          </Title>
+          <p className="text-xs md:text-sm text-gray-500">
+            {servicePlan?.description}
+          </p>
+        </div>
+      ),
+    },
+    {
+      title: "PURCHASE DATE",
+      dataIndex: "purchaseDate",
+      key: "purchaseDate",
+      width: 150,
+      render: (purchaseDate) => (
+        <span className="text-sm md:text-base">
+          {new Date(purchaseDate).toLocaleDateString()}
+        </span>
+      ),
+    },
+    {
+      title: "EXPIRY DATE",
+      dataIndex: "expiryDate",
+      key: "expiryDate",
+      width: 150,
+      render: (expiryDate) => (
+        <span className="text-sm md:text-base">
+          {new Date(expiryDate).toLocaleDateString()}
+        </span>
+      ),
+    },
+  ];
+
+  const userPurchases = async () => {
+    if (!userId) return;
+
+    try {
+      const response = await axios.get(
+        `${URL}${GET_USER_SERVICES_PURCHASES_API}/${userId}`,
+        authHeaders
+      );
+      const purchases = response.data;
+      setPurchases(purchases);
+    } catch (error) {
+      console.log("Error fetching purchases:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (userId) {
+      userPurchases();
+    }
+  }, [userId]);
+
+  return (
+    <div className="overflow-x-auto p-4 md:p-6">
+      <Table
+        columns={columns}
+        dataSource={purchases}
+        rowKey={(record) => record._id}
+        scroll={{ x: 600 }}
+        className="w-full bg-white rounded-lg shadow-sm"
+      />
+    </div>
+  );
+};
+
+
+
+
 function Profile() {
   // const { getUser, user } = useCallApi()
 
-  const [imageURL, setImageURL] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
@@ -103,17 +157,6 @@ function Profile() {
     // }, 1000)
   }, [userId]);
 
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error("Image must smaller than 2MB!");
-    }
-    return isJpgOrPng && isLt2M;
-  };
 
   const pencil = [
     <svg
@@ -154,7 +197,7 @@ function Profile() {
 
                 <div className="avatar-info">
                   <h4 className="font-semibold m-0">{user?.username}</h4>
-                  <p>CEO / Co-Founder</p>
+                  {/* <p>CEO / Co-Founder</p> */}
                 </div>
               </Avatar.Group>
             </Col>
@@ -167,88 +210,52 @@ function Profile() {
                 justifyContent: "flex-end",
               }}
             >
-              {/* <Radio.Group defaultValue="a">
-                <Radio.Button value="a">OVERVIEW</Radio.Button>
-                <Radio.Button value="b">TEAMS</Radio.Button>
-                <Radio.Button value="c">PROJECTS</Radio.Button>
-              </Radio.Group> */}
             </Col>
           </Row>
         }
       ></Card>
 
       <Row gutter={[24, 0]}>
-        {/* <Col span={24} md={8} className="mb-24 ">
-          <Card
-            bordered={false}
-            className="header-solid h-full"
-            title={<h6 className="font-semibold m-0">Platform Settings</h6>}
-          >
-            <ul className="list settings-list">
-              <li>
-                <h6 className="list-header text-sm text-muted">ACCOUNT</h6>
-              </li>
-              <li>
-                <Switch defaultChecked />
-
-                <span>Email me when someone follows me</span>
-              </li>
-              <li>
-                <Switch />
-                <span>Email me when someone answers me</span>
-              </li>
-              <li>
-                <Switch defaultChecked />
-                <span>Email me when someone mentions me</span>
-              </li>
-              <li>
-                <h6 className="list-header text-sm text-muted m-0">
-                  APPLICATION
-                </h6>
-              </li>
-              <li>
-                <Switch defaultChecked />
-                <span>New launches and projects</span>
-              </li>
-              <li>
-                <Switch defaultChecked />
-                <span>Monthly product updates</span>
-              </li>
-              <li>
-                <Switch defaultChecked />
-                <span>Subscribe to newsletter</span>
-              </li>
-            </ul>
-          </Card>
-        </Col> */}
         <Col span={24} md={8} className="mb-24">
           <Card
             bordered={false}
             title={<h6 className="font-semibold m-0">Profile Information</h6>}
             className="header-solid h-full card-profile-information"
-            extra={<Button type="link">{pencil}</Button>}
+            extra={<EditUserInfo icon={pencil} user={user} userId={userId} getUser={getUser} />}
             bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
           >
-
             <hr className="my-25" />
             <Descriptions title="">
               <Descriptions.Item label="Full Name" span={3}>
                 {user?.username}
               </Descriptions.Item>
+              <Descriptions.Item label="Company Name" span={3}>
+                {user?.company_name}
+              </Descriptions.Item>
+              <Descriptions.Item label="Contact Person" span={3}>
+                {user?.contact_person}
+              </Descriptions.Item>
+              <Descriptions.Item label="Official Email" span={3}>
+                {user?.official_email}
+              </Descriptions.Item>
+              <Descriptions.Item label="Personal Email" span={3}>
+                {user?.personal_email}
+              </Descriptions.Item>
               <Descriptions.Item label="Mobile" span={3}>
                 {user?.phone_number}
               </Descriptions.Item>
-              <Descriptions.Item label="Email" span={3}>
-                {user?.personal_email}
-              </Descriptions.Item>
-              <Descriptions.Item label="Location" span={3}>
+              <Descriptions.Item label="Address" span={3}>
                 {user?.address}
               </Descriptions.Item>
               <Descriptions.Item label="Website" span={3}>
-                {user?.website}
+                {user?.website_url}
+              </Descriptions.Item>
+              <Descriptions.Item label="Industry" span={3}>
+                {user?.industry}
               </Descriptions.Item>
             </Descriptions>
           </Card>
+
         </Col>
         {/* <Col span={24} md={8} className="mb-24">
           <Card
@@ -289,37 +296,49 @@ function Profile() {
       >
 
 
-        <Row gutter={[24, 24]}>
-          {purchases?.map((p, index) => (
-            <Col span={24} md={12} xl={6} key={index}>
-              <Card
-                bordered={false}
-                className="card-project"
-              // cover={<img alt="example" src={p?.img} />}
-              >
-                {/* <div className="card-tag">{p?.titlesub}</div> */}
-                <h5>{Date(p?.purchaseDate).normalize()}</h5>
-                <p>{p?.expiryDate}</p>
-                <Row gutter={[6, 0]} className="card-footer">
-                  <Col span={12}>
-                    <Button type="button">VIEW PROJECT</Button>
-                  </Col>
-                  {/* <Col span={12} className="text-right">
-                    <Avatar.Group className="avatar-chips">
-                      <Avatar size="small" src={profilavatar} />
-                      <Avatar size="small" src={convesionImg} />
-                      <Avatar size="small" src={convesionImg2} />
-                      <Avatar size="small" src={convesionImg3} />
-                    </Avatar.Group>
-                  </Col> */}
-                </Row>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+        <div>
+          <PurchaseTable setPurchases={setPurchases} userId={userId} purchases={purchases} />
+        </div>
       </Card>
     </Main>
   );
 }
 
 export default Profile;
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ----------------------------------------------------------------------
+
+
+
+function Tables() {
+  return (
+    <Main>
+      <div className="tabled">
+        <Row gutter={[24, 0]}>
+          <Col xs="24" xl={24}>
+            {/* Purchase Table */}
+            <Card
+              bordered={false}
+              className="criclebox tablespace mb-24"
+              title="Purchased Services"
+            >
+              <PurchaseTable />
+            </Card>
+          </Col>
+        </Row>
+      </div>
+    </Main>
+  );
+}

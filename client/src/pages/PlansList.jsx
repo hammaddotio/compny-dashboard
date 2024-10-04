@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Row, Col, Card, Button } from "antd";
+import { Row, Col, Card, Button, message } from "antd";
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import BgProfile from "../assets/images/bg-profile.jpg";
 import Main from '../components/layout/Main';
@@ -40,6 +40,7 @@ const PlansList = () => {
       await axios.delete(`${URL}${DELETE_SERVICE_API}/${planId}`, authHeaders);
       fetchServicePlans(); // Refetch the plans after delete operation
       console.log('deleted')
+      message.success('Service Deleted Successfully')
     } catch (error) {
       setError('Failed to delete the plan.');
     }

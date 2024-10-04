@@ -46,7 +46,7 @@ export const update_user = async (req, res) => {
         } = req.body;
 
         // Find the user by ID
-        const find_user = await User.findById(req.params.id);
+        const find_user = await User.findById(req.user_id);
         if (!find_user) return res.status(400).json({ message: 'User not found' });
 
         // Prepare the updated data excluding username and password

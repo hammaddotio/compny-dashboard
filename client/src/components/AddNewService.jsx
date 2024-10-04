@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal, Input } from 'antd';
+import { Button, Modal, Input, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import moment from 'moment';
@@ -78,11 +78,20 @@ const AddNewService = ({ fetchServicePlans }) => {
                 // localStorage.setItem('selectedPlan', JSON.stringify(response.data));
                 setConfirmLoading(false);
                 setOpen(false);
-                navigate(redirectTo); // Navigate to the payment page after plan creation
+                // navigate('/plan'); // Navigate to the payment page after plan creation
                 fetchServicePlans()
+
+                message.success('New Services Created Successfully')
+
+                setName('')
+                setDescription('')
+                setPrice('')
+                setServices([])
+
             }
         } catch (error) {
             console.error('Error creating plan:', error);
+            // message.error(error?.response?.data)
             setConfirmLoading(false);
         }
     };

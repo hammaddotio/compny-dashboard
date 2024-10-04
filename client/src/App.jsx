@@ -27,6 +27,8 @@ import Main from "./components/layout/Main";
 // import "antd/dist/antd.css";
 import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
+import UserDashboard from './pages/UserDashboard';
+import TicketsTableAdmin from './pages/TicketsTableAdmin';
 
 const App = () => {
   const stripePromise = loadStripe(STRIPE_PUBLISH_KEY);
@@ -45,12 +47,14 @@ const App = () => {
 
           <>
             {/* Admin-Only Routes */}
-            <Route path="/" element={<ProtectedRoute element={<Home />} adminOnly={true} />} />
-            <Route path="/billing" element={<ProtectedRoute element={<Billing />} adminOnly={true} />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/billing" element={<Billing />} />
+            <Route path="/user-dashboard" element={<UserDashboard />} />
 
             {/* User-Only Routes */}
             <Route path="/purchased-services" element={<ProtectedRoute element={<UserPurchasedServices />} userOnly={true} />} />
             <Route path="/payment" element={<ProtectedRoute element={<PaymentStripe />} userOnly={true} />} />
+            <Route path="/tickets" element={<TicketsTableAdmin />} />
 
             {/* Mixed Role Routes */}
             {/* <Route path="/profile" element={<ProtectedRoute element={<Profile />} userOnly={true} adminOnly={true} />} /> */}
