@@ -5,6 +5,7 @@ import { Menu, Button } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
 import { useEffect, useState } from "react";
+import { checkUserRole } from "../../constant";
 
 function Sidenav({ color }) {
   const { pathname } = useLocation();
@@ -216,7 +217,7 @@ function Sidenav({ color }) {
               </NavLink>
             </Menu.Item>
 
-            <Menu.Item key="3">
+            <Menu.Item key="30">
               <NavLink to="/tickets">
                 <span
                   className="icon"
@@ -232,19 +233,7 @@ function Sidenav({ color }) {
           </>
         }
 
-        <Menu.Item key='9'>
-          <NavLink to="/user-dashboard">
-            <span
-              className="icon"
-              style={{
-                background: page === "user-dashboard" ? color : "",
-              }}
-            >
-              {dashboard}
-            </span>
-            <span className="label">Dashboard</span>
-          </NavLink>
-        </Menu.Item>
+
 
         <Menu.Item key="4">
           <NavLink to="/plans">
@@ -259,6 +248,24 @@ function Sidenav({ color }) {
             <span className="label">Plans</span>
           </NavLink>
         </Menu.Item>
+        {
+          isLoggedIn && checkUserRole === 'US' && (
+            <Menu.Item key='9'>
+              <NavLink to="/my-tickets">
+                <span
+                  className="icon"
+                  style={{
+                    background: page === "my-tickets" ? color : "",
+                  }}
+                >
+                  {plan}
+                </span>
+                <span className="label">My Tickets</span>
+              </NavLink>
+            </Menu.Item>
+          )
+        }
+
 
         {
           isLoggedIn &&
@@ -309,7 +316,7 @@ function Sidenav({ color }) {
                 <span className="label">Sign In</span>
               </NavLink>
             </Menu.Item>
-            <Menu.Item key="8">
+            <Menu.Item key="10">
               <NavLink to="/sign-up">
                 <span className="icon">{signup}</span>
                 <span className="label">Sign Up</span>

@@ -27,8 +27,8 @@ import Main from "./components/layout/Main";
 // import "antd/dist/antd.css";
 import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
-import UserDashboard from './pages/UserDashboard';
 import TicketsTableAdmin from './pages/TicketsTableAdmin';
+import MyTickets from './pages/MyTickets..';
 
 const App = () => {
   const stripePromise = loadStripe(STRIPE_PUBLISH_KEY);
@@ -49,7 +49,7 @@ const App = () => {
             {/* Admin-Only Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/billing" element={<Billing />} />
-            <Route path="/user-dashboard" element={<UserDashboard />} />
+            <Route path="/my-tickets" element={<MyTickets />} />
 
             {/* User-Only Routes */}
             <Route path="/purchased-services" element={<ProtectedRoute element={<UserPurchasedServices />} userOnly={true} />} />

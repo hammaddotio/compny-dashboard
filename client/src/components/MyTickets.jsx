@@ -7,9 +7,10 @@ import { Table, Typography, Select, Modal, Button } from 'antd';
 const { Title } = Typography;
 const { Option } = Select;
 
-const TicketsTable = ({ tickets, setTickets }) => {
+const TicketsTable = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedTicket, setSelectedTicket] = useState(null);
+    const [tickets, setTickets] = useState([])
 
     const userTickets = async () => {
         try {

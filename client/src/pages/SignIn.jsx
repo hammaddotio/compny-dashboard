@@ -14,7 +14,7 @@ import {
   message,
   Card,
 } from "antd";
-import signinbg from "../assets/images/img-signin.jpg";
+import signinbg from "../assets/images/sign-in.jpg";
 import {
   DribbbleOutlined,
   TwitterOutlined,

@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import Main from '../components/layout/Main'
-import CreateTicketModal from './../components/CreateTicketModal';
-import TicketsTable from './../components/TicketsTable';
+import CreateTicketModal from '../components/CreateTicketModal';
+import TicketsTable from '../components/MyTickets';
 import ChatBox from '../components/ChatBox';
 
-const UserDashboard = () => {
+const MyTickets = () => {
     const [tickets, setTickets] = useState([])
 
     return (
-        <Main>
+        <Main >
             <div className='mb-4'>
                 <CreateTicketModal />
             </div>
@@ -21,4 +21,4 @@ const UserDashboard = () => {
     )
 }
 
-export default UserDashboard
+export default MyTickets

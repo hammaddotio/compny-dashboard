@@ -19,7 +19,7 @@ export const UPDATE_USER_INFO_API = '/api/update-user';
 export const GET_USER_SERVICES_PURCHASES_API = '/api/service-purchases';
 
 export const SUBMIT_TICKET_API = '/api/create-ticket'
-export const GET_USER_TICKETS_API = '/api/get-tickets'
+export const GET_USER_TICKETS_API = '/api/get-user-tickets'
 export const GET_ALL_TICKETS_API = '/api/all-tickets'
 export const UPDATE_TICKET_PRIORITY = '/api/update-ticket-priority'
 export const UPDATE_TICKET_API = '/api/update-ticket'
