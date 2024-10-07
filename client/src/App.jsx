@@ -36,7 +36,7 @@ const App = () => {
 
         {/* Admin-Only Routes */}
         <Route path='' element={<AdminProtectedRoutes />}>
-          <Route path="/dashboard" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/chats" element={<AdminChat />} />
           <Route path="/tickets" element={<TicketsTableAdmin />} />
         </Route>
