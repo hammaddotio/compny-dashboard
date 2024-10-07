@@ -66,6 +66,7 @@ export const getPurchasesByUser = async (req, res) => {
             .populate('servicePlan') // This will populate the service plan details
             .populate('user'); // This will populate user details if needed
 
+        console.log(purchases)
         res.status(200).json(purchases);
     } catch (error) {
         res.status(500).json({ message: error.message });

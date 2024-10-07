@@ -105,9 +105,9 @@ export const login = async (req, res) => {
 
         // Return user data (excluding password) and token
         const { password: _, ...user_data } = find_user._doc;  // Exclude password from the response
-        res.status(200).json({ user_role: user_data.user_role, token });
+        res.status(200).json({ user_role: user_data.user_role, token, _id: user_data._id });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'An internal server error occurred' });
     }
-};
+}

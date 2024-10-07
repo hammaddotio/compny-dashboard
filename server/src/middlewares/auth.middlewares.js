@@ -26,30 +26,28 @@ import { decrypt_jwt_token } from "../utils/jwt.js"
 
 export const auth_middleware = (roles) => async (req, res, next) => {
     try {
-        // Retrieve the token from the Authorization header or body
-        const token = req.header('Authorization') || req.body.token;
+        // Retrieve the token from the Authorization header
+        const token = req.header('Authorization') || req.body.token;  // Expecting 'Bearer <token>'
         if (!token) {
-            return res.status(401).json({ msg: 'Unauthorized user' })
+            return res.status(401).json({ msg: 'Unauthorized: No token provided' });
         }
 
         // Decrypt and verify the token
-        const verify_token = decrypt_jwt_token(token, process.env.JWT_PRIVATE_KEY);
+        const verify_token = decrypt_jwt_token(token, process.env.JWT_PRIVATE_KEY); // Using jwt to verify
         if (!verify_token) {
-            return res.status(401).json({ msg: 'Invalid token' })
+            return res.status(401).json({ msg: 'Unauthorized: Invalid token' });
         }
 
         // Find the user by ID from the decrypted token
         const user = await User.findById(verify_token._id);
         if (!user) {
-            return res.status(404).json({ msg: 'User not found' })
+            return res.status(404).json({ msg: 'User not found' });
         }
-        console.log(user)
 
         // Check if the user's role is authorized
         if (roles && !roles.includes(user?.user_role)) {
-            return res.status(403).json({ msg: 'Unauthorized user role' })
+            return res.status(403).json({ msg: 'Unauthorized: Insufficient role' });
         }
-        console.log(roles)
 
         // Attach user information to the request object for downstream use
         req.user_id = user._id;
@@ -59,9 +57,10 @@ export const auth_middleware = (roles) => async (req, res, next) => {
         next();
     } catch (error) {
         console.error('Authentication error:', error); // Log the error for debugging
-        return res.status(500).json({ error: 'Internal server error' }); // Handle errors gracefully
+        return res.status(500).json({ error: 'Internal server error' });
     }
 };
+
 
 export const check_plan_buyer_or_not_middleware = () => async (req, res, next) => {
     try {

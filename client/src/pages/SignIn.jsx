@@ -135,6 +135,7 @@ const SignIn = () => {
       navigate(redirectTo);
       localStorage.setItem('token', response.data?.token);
       localStorage.setItem('role', response.data?.user_role);
+      localStorage.setItem('userId', response.data?._id);
       console.log('logedin')
     } catch (error) {
       message.error('Login failed. Please check your credentials.');

@@ -1,3 +1,4 @@
+import { Purchase } from "../../models/purchase.model.js"
 import { User } from "../../models/user.models.js"
 import { encrypt_password } from "../../utils/bcrypt.js"
 import { generate_jwt_token } from "../../utils/jwt.js"
@@ -104,5 +105,20 @@ export const getUserProfile = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'An internal server error occurred' });
+    }
+}
+
+
+
+// GET all users
+export const getUsers = async (req, res) => {
+    try {
+        const usersWithPlans = await User.find({
+            _id: { $in: await Purchase.distinct('user') } // Find users whose IDs are in the Plan collection
+        });
+        res.status(200).json(usersWithPlans);
+    } catch (error) {
+        console.error('Error fetching users with purchased plans:', error);
+        res.status(500).json({ message: 'Error fetching users' });
     }
 }

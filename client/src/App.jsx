@@ -29,6 +29,8 @@ import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
 import TicketsTableAdmin from './pages/TicketsTableAdmin';
 import MyTickets from './pages/MyTickets..';
+import AdminChat from './pages/AdminChat';
+import AllUserList from './pages/AllUsersList';
 
 const App = () => {
   const stripePromise = loadStripe(STRIPE_PUBLISH_KEY);
@@ -50,6 +52,8 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/billing" element={<Billing />} />
             <Route path="/my-tickets" element={<MyTickets />} />
+            <Route path="/chat" element={<AdminChat />} />
+            <Route path="/all-users" element={<AllUserList />} />
 
             {/* User-Only Routes */}
             <Route path="/purchased-services" element={<ProtectedRoute element={<UserPurchasedServices />} userOnly={true} />} />
