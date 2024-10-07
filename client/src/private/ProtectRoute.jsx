@@ -35,13 +35,26 @@ export default ProtectedRoute;
 
 
 // Auth Protected Routes Component
-export const AuthProtectedRoutes = () => {
+export const ProtectedRoutes = () => {
+    const token = localStorage.getItem('token');
 
     // Check if user is logged in
-    if (checkToken && checkUserRole && checkUserId) {
+    if (token) {
         return <Outlet />;
     } else {
         return <Navigate to="/sign-in" replace />;
+    }
+};
+
+export const AuthProtectedRoutes = () => {
+    const token = localStorage.getItem('token');
+    const userRole = localStorage.getItem('userRole');
+
+    // Allow access to sign-up and sign-in pages only if the user is not authenticated
+    if (!token && !userRole) {
+        return <Outlet />;
+    } else {
+        return <Navigate to="/plans" replace />; // Redirect authenticated users to the dashboard
     }
 };
 export const AdminProtectedRoutes = () => {

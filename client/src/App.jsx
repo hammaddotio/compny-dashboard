@@ -11,7 +11,7 @@ import Profile from './pages/Profile';
 import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import PlansList from './pages/PlansList';
-import ProtectedRoute, { AdminProtectedRoutes, AuthProtectedRoutes, UserProtectedRoutes } from './private/ProtectRoute';
+import ProtectedRoute, { AdminProtectedRoutes, AuthProtectedRoutes, ProtectedRoutes, UserProtectedRoutes } from './private/ProtectRoute';
 import AdminChat from './pages/AdminChat';
 import TicketsTableAdmin from './pages/TicketsTableAdmin';
 import MyTickets from './pages/MyTickets..';
@@ -51,11 +51,10 @@ const App = () => {
         {/* Payment Route (User-Only) */}
 
         {/* Mixed Role Routes */}
-        <Route path="/plans" element={<ProtectedRoute element={<PlansList />} />} />
-        <Route path="/" element={<ProtectedRoute element={<PlansList />} />} />
+        <Route path="/plans" element={<PlansList />} />
 
         {/* Profile Route - Accessible only to logged-in users */}
-        <Route element={<AuthProtectedRoutes />}>
+        <Route element={<ProtectedRoutes />}>
           <Route path="/profile" element={<Profile />} />
         </Route>
 
