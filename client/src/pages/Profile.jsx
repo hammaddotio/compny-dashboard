@@ -14,7 +14,7 @@ import Main from "../components/layout/Main";
 import { useCallApi } from "../context/CallApiAndUpdateState";
 
 import axios from "axios"
-import { authHeaders, GET_USER_API, GET_USER_SERVICES_PURCHASES_API, URL } from "../constant"
+import { authHeaders, checkUserRole, GET_USER_API, GET_USER_SERVICES_PURCHASES_API, URL } from "../constant"
 
 
 
@@ -285,22 +285,24 @@ function Profile() {
           </Card>
         </Col> */}
       </Row>
-      <Card
-        bordered={false}
-        className="header-solid mb-24"
-        title={
-          <>
-            <h6 className="font-semibold">Buy Plan</h6>
-            {/* <p>Architects design houses</p> */}
-          </>
-        }
-      >
-
-
-        <div>
-          <PurchaseTable userPurchasesCall={userPurchases} setPurchases={setPurchases} userId={userId} purchases={purchases} />
-        </div>
-      </Card>
+      {
+        checkUserRole === 'US' && (
+          <Card
+            bordered={false}
+            className="header-solid mb-24"
+            title={
+              <>
+                <h6 className="font-semibold">Buy Plan</h6>
+                {/* <p>Architects design houses</p> */}
+              </>
+            }
+          >
+            <div>
+              <PurchaseTable userPurchasesCall={userPurchases} setPurchases={setPurchases} userId={userId} purchases={purchases} />
+            </div>
+          </Card>
+        )
+      }
     </Main>
   );
 }

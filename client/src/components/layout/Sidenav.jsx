@@ -23,7 +23,7 @@ function Sidenav({ color }) {
       setRole(rolesArray.includes('AD') ? 'AD' : 'US'); // Set 'AD' if found, else 'US'
       setIsLoggedIn(true); // User is logged in if roles are found
     }
-  }, []); // Run on component mount
+  }, [role]); // Run on component mount
 
   const dashboard = [
     <svg
