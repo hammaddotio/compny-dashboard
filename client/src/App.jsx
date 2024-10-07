@@ -36,7 +36,7 @@ const App = () => {
 
         {/* Admin-Only Routes */}
         <Route path='' element={<AdminProtectedRoutes />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Home />} />
           <Route path="/chats" element={<AdminChat />} />
           <Route path="/tickets" element={<TicketsTableAdmin />} />
         </Route>
@@ -52,6 +52,7 @@ const App = () => {
 
         {/* Mixed Role Routes */}
         <Route path="/plans" element={<ProtectedRoute element={<PlansList />} />} />
+        <Route path="/" element={<ProtectedRoute element={<PlansList />} />} />
 
         {/* Profile Route - Accessible only to logged-in users */}
         <Route element={<AuthProtectedRoutes />}>
