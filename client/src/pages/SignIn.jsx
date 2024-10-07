@@ -132,7 +132,8 @@ const SignIn = () => {
       console.log('Success:', response.data);
       // Handle successful login (e.g., redirect, store token)
 
-      navigate(redirectTo);
+      console.log(redirectTo)
+      navigate(redirectTo || '/plans');
       localStorage.setItem('token', response.data?.token);
       localStorage.setItem('role', response.data?.user_role);
       localStorage.setItem('userId', response.data?._id);

@@ -48,6 +48,6 @@ export const authHeaders = {
     }
 }
 
-export const redirectTo = location.state?.from?.pathname || '/';
+export const redirectTo = location.state?.from?.pathname || '/plans';
 
 // do you want to multiple entries 

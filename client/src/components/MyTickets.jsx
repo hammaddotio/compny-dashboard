@@ -7,28 +7,27 @@ import { Table, Typography, Select, Modal, Button } from 'antd';
 const { Title } = Typography;
 const { Option } = Select;
 
-const TicketsTable = () => {
+const TicketsTable = ({ tickets, userTicketsCall }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedTicket, setSelectedTicket] = useState(null);
-    const [tickets, setTickets] = useState([])
 
-    const userTickets = async () => {
-        try {
-            const response = await axios.get(
-                `${URL}${GET_USER_TICKETS_API}/`,
-                authHeaders
-            );
-            const tickets = response.data;
-            setTickets(tickets);
-        } catch (error) {
-            console.log("Error fetching tickets:", error);
-        }
-    };
+    // const userTicketsCall = async () => {
+    //     try {
+    //         const response = await axios.get(
+    //             `${URL}${GET_USER_TICKETS_API}/`,
+    //             authHeaders
+    //         );
+    //         const tickets = response.data;
+    //         setTickets(tickets);
+    //     } catch (error) {
+    //         console.log("Error fetching tickets:", error);
+    //     }
+    // };
 
     const updateTicketPriority = async (id, newPriority) => {
         try {
             await axios.patch(`${URL}${UPDATE_TICKET_PRIORITY}/${id}`, { priority: newPriority }, authHeaders);
-            userTickets(); // Refresh tickets after update
+            userTicketsCall(); // Refresh tickets after update
         } catch (error) {
             console.log("Error updating ticket priority:", error);
         }
@@ -115,7 +114,7 @@ const TicketsTable = () => {
     ];
 
     useEffect(() => {
-        userTickets();
+        userTicketsCall();
     }, []);
 
     return (

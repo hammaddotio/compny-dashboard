@@ -27,7 +27,7 @@ const ServicesListModal = ({ selectedPlan }) => {
             setConfirmLoading(false);
 
             if (checkToken && checkUserRole === 'US') {
-                navigate('/payment');
+                navigate('/payment/stripe');
             } else if (checkToken && checkUserRole === 'AD') {
                 message.warning('Need To LoggedIn as a User Before Buy Our Plan');
                 navigate('/dashboard');

@@ -6,7 +6,7 @@ import axios from 'axios';
 const { TextArea } = Input;
 const { Option } = Select;
 
-const CreateTicketModal = ({ icon }) => {
+const CreateTicketModal = ({ userTicketsCall }) => {
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -37,6 +37,7 @@ const CreateTicketModal = ({ icon }) => {
                 setOpen(false);
                 // Optionally, reset the form
                 resetForm();
+                userTicketsCall()
             } else {
                 throw new Error('Unexpected response status');
             }
