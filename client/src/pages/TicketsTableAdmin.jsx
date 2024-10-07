@@ -103,15 +103,16 @@ const TicketsTableAdmin = () => {
             key: "user",
             width: 200,
             render: (userId) => {
+                console.log(userId)
                 // Assuming userIds is an array and you want to display the username of the first user
                 // const username = userId.length > 0 ? userId[0].username : 'Unknown User'; // Handle case if array is empty
                 // console.log(userId)
                 return (
-                    <div className="p-2">
+                    <div className="p-2" >
                         <Title level={5} className="text-base md:text-lg">
-                            {userId.username}
+                            {userId?.username}
                         </Title>
-                    </div>
+                    </div >
                 );
             },
         },
@@ -182,6 +183,7 @@ const TicketsTableAdmin = () => {
 
     useEffect(() => {
         userTickets();
+        console.log(tickets)
     }, []);
 
     return (

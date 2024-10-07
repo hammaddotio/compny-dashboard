@@ -3,19 +3,19 @@ import mongoose from 'mongoose';
 const userSchema = new mongoose.Schema({
     client_name: {
         type: String,
-        required: true // Assuming you want this to be required as well
+        // required: true // Assuming you want this to be required as well
     },
     company_name: {
         type: String,
-        required: true // Assuming you want this to be required as well
+        // required: true // Assuming you want this to be required as well
     },
     contact_person: {
         type: String,
-        required: false // Optional
+        // required: false // Optional
     },
     official_email: {
         type: String,
-        required: true,
+        // required: true,
         unique: true // Assuming you want unique official emails
     },
     personal_email: {

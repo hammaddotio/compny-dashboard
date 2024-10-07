@@ -4,7 +4,7 @@ import { Table, Avatar, Typography, Button } from 'antd';
 import React from "react";
 import { Row, Col, Card } from "antd";
 import Main from '../components/layout/Main';
-import { authHeaders, checkToken, SERVICE_PURCHASE_API, URL } from '../constant';
+import { authHeaders, checkToken, checkUserId, SERVICE_PURCHASE_API, URL } from '../constant';
 import AddNewService from '../components/AddNewService';
 
 const { Title } = Typography;
@@ -16,7 +16,7 @@ const PurchaseTable = () => {
     // Fetch purchase data from your API
     const fetchPurchaseData = async () => {
       try {
-        const response = await axios.get(`${URL}${SERVICE_PURCHASE_API}`, authHeaders); // Replace with your API endpoint
+        const response = await axios.get(`${URL}${SERVICE_PURCHASE_API}/${checkUserId}`, authHeaders); // Replace with your API endpoint
         console.log(response)
         setPurchaseData(response.data);
       } catch (error) {

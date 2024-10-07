@@ -33,7 +33,6 @@ export const get_user = async (req, res) => {
 
 export const update_user = async (req, res) => {
     try {
-        // Extracting new fields from the request body, including two types of email
         const {
             client_name,
             company_name,
@@ -43,14 +42,15 @@ export const update_user = async (req, res) => {
             phone_number,
             address,
             website_url,
-            industry
+            industry,
+            username, // Get username from request if it's included
         } = req.body;
 
         // Find the user by ID
         const find_user = await User.findById(req.user_id);
         if (!find_user) return res.status(400).json({ message: 'User not found' });
 
-        // Prepare the updated data excluding username and password
+        // Prepare updated data, excluding the password
         const updated_data = {
             client_name,
             company_name,
@@ -61,14 +61,21 @@ export const update_user = async (req, res) => {
             address,
             website_url,
             industry,
-            // Assuming you still want to include username and password unchanged
-            username: find_user.username,
-            password: find_user.password // Keep the original password
+            // Include username only if it's different
+            ...(username && username !== find_user.username ? { username } : {}),
         };
+
+        // Check if the username is being changed and if it's already taken
+        // if (username && username !== find_user.username) {
+        //     const existingUser = await User.findOne({ username });
+        //     if (existingUser) {
+        //         return res.status(400).json({ message: 'Username already exists' });
+        //     }
+        // }
 
         // Update user details in the database
         const user = await User.findByIdAndUpdate(
-            req.params.id,
+            req.user_id, // Use the ID from the token (assumed to be req.user_id)
             updated_data,
             { new: true }
         );
@@ -82,6 +89,7 @@ export const update_user = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 
 

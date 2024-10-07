@@ -1462,7 +1462,7 @@ span.ismobile {
   text-align: center;
   margin-top: 25px;
 }
-.setting-drwer {
+/* .setting-drwer {
   background: #fff;
   border-radius: 50%;
   bottom: 42px;
@@ -1476,7 +1476,7 @@ span.ismobile {
   line-height: 60px;
   position: fixed;
   cursor: pointer;
-}
+} */
 
 ul.ant-menu.ant-menu-root.ant-menu-inline.ant-menu-light.left-nav li:active {
   background: transparent;
@@ -2860,10 +2860,10 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
   margin-right: 8px;
   margin-left: 0px;
 }
-.layout-dashboard-rtl .setting-drwer {
+/* .layout-dashboard-rtl .setting-drwer {
   left: 30px;
-  right: auto;
-}
+  right: auto;s
+} */
 
 .layout-dashboard-rtl ul.ant-menu.ant-menu-root.ant-menu-inline.ant-menu-light {
   text-align: right;

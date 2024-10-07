@@ -33,6 +33,10 @@ export const GET_RECENT_CHATS_API = '/api/recent-chats/'
 
 export const GET_ADMIN_GET_USERS_PLANS_API = '/api/admin/users/plans'
 
+export const GET_ALL_USERS_API = '/api/get-all-users'
+export const UPDATE_USER_API = '/api/update-user'
+export const DELETE_USER_API = '/api/delete-user'
+
 
 export const checkUserRole = localStorage.getItem('role')
 export const checkToken = localStorage.getItem('token')

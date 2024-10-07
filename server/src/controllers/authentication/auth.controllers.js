@@ -6,38 +6,28 @@ import { generate_jwt_token } from "../../utils/jwt.js"
 export const register = async (req, res) => {
     try {
         const {
-            // salutation,
             username,
-            // first_name,
-            // last_name,
-            email,
+            personal_email,
             password,
-            // phone_number,
-            // birthday,
-            // street,
-            // city,
-            // state,
-            // zip,
-            // country,
-            // referral
         } = req.body;
 
         // Validation schema using Joi
         const user_registration_schema = Joi.object({
-            // salutation: Joi.string().valid('mr', 'mrs', 'miss', 'ms').required('Salutation is required'),
-            // first_name: Joi.string().required('First name is required'),
-            username: Joi.string().required('username is required'),
-            // last_name: Joi.string().required('Last name is required'),
-            email: Joi.string().email().required('Email is required'),
-            password: Joi.string().min(6).max(20).required('Password is required'),  // Adjust password length as per your preference
-            // phone_number: Joi.string().min(11).max(13).required('Phone number is required'),
-            // birthday: Joi.date(),
-            // street: Joi.string().required('Street is required'),
-            // city: Joi.string().required('City is required'),
-            // state: Joi.string().required('State is required'),
-            // zip: Joi.string().required('Zip is required'),
-            // country: Joi.string().required('Country is required'),
-            // referral: Joi.string().optional()  // Optional field
+            username: Joi.string().required().messages({
+                'any.required': 'Username is required',
+                'string.empty': 'Username cannot be empty',
+            }),
+            personal_email: Joi.string().email().required().messages({
+                'any.required': 'Email is required',
+                'string.empty': 'Email cannot be empty',
+                'string.email': 'Email must be a valid email address',
+            }),
+            password: Joi.string().min(6).max(20).required().messages({
+                'any.required': 'Password is required',
+                'string.empty': 'Password cannot be empty',
+                'string.min': 'Password must be at least 6 characters long',
+                'string.max': 'Password must be at most 20 characters long',
+            }),
         });
 
         // Validate the request body against the schema
@@ -45,32 +35,23 @@ export const register = async (req, res) => {
         if (error) return res.status(400).json({ error: error.message });
 
         // Check if the user is already registered
-        const check_already_registered = await User.findOne({ email });
-        if (check_already_registered) return res.status(401).json({ error: 'User already registered' });
+        const check_already_registered = await User.findOne({ username });
+        if (check_already_registered) return res.status(409).json({ error: 'User already registered' });
 
         // Encrypt the password
         const encrypted_password = await encrypt_password(password);
 
         // Create a new user with the encrypted password
         const user = await User.create({
-            // salutation,
             username,
-            // first_name,
-            // last_name,
-            email,
+            personal_email,
             password: encrypted_password,
-            // phone_number,
-            // birthday,
-            // street,
-            // city,
-            // state,
-            // zip,
-            // country,
-            // referral
         });
+        console.log(user)
 
-        // Return the newly created user
-        res.status(201).json(user);
+        // Return the newly created user, but you may want to omit the password in the response
+        const { password: _, ...userResponse } = user._doc; // Omit password
+        res.status(201).json(userResponse);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'An error occurred during registration' });

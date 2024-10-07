@@ -151,42 +151,6 @@ const SignUp = () => {
   return (
     <>
       <div className="layout-default ant-layout layout-sign-up">
-        {/* <Header>
-          <div className="header-col header-brand">
-            <h5>Muse Dashboard</h5>
-          </div>
-          <div className="header-col header-nav">
-            <Menu mode="horizontal" defaultSelectedKeys={["1"]}>
-              <Menu.Item key="1">
-                <Link to="/dashboard">
-                  {template}
-                  <span> Dashboard</span>
-                </Link>
-              </Menu.Item>
-              <Menu.Item key="2">
-                <Link to="/profile">
-                  {profile}
-                  <span>Profile</span>
-                </Link>
-              </Menu.Item>
-              <Menu.Item key="3">
-                <Link to="/sign-up">
-                  {signup}
-                  <span> Sign Up</span>
-                </Link>
-              </Menu.Item>
-              <Menu.Item key="4">
-                <Link to="/sign-in">
-                  {signin}
-                  <span> Sign In</span>
-                </Link>
-              </Menu.Item>
-            </Menu>
-          </div>
-          <div className="header-col header-btn">
-            <Button type="false">FREE DOWNLOAD</Button>
-          </div>
-        </Header> */}
 
         <Content className="p-0">
           <div className="sign-up-header">
@@ -216,58 +180,6 @@ const SignUp = () => {
               </Button>
             </div>
             <p className="text-center my-25 font-semibold text-muted">Or</p>
-            {/* <Form
-              name="basic"
-              initialValues={{ remember: true }}
-              onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
-              className="row-col"
-            >
-              <Form.Item
-                name="Name"
-                rules={[
-                  { required: true, message: "Please input your username!" },
-                ]}
-              >
-                <Input placeholder="Name" />
-              </Form.Item>
-              <Form.Item
-                name="email"
-                rules={[
-                  { required: true, message: "Please input your email!" },
-                ]}
-              >
-                <Input placeholder="email" />
-              </Form.Item>
-              <Form.Item
-                name="password"
-                rules={[
-                  { required: true, message: "Please input your password!" },
-                ]}
-              >
-                <Input placeholder="Passwoed" />
-              </Form.Item>
-
-              <Form.Item name="remember" valuePropName="checked">
-                <Checkbox>
-                  I agree the{" "}
-                  <a href="#pablo" className="font-bold text-dark">
-                    Terms and Conditions
-                  </a>
-                </Checkbox>
-              </Form.Item>
-
-              <Form.Item>
-                <Button
-                  style={{ width: "100%" }}
-                  type="primary"
-                  htmlType="submit"
-                >
-                  SIGN UP
-                </Button>
-              </Form.Item>
-            </Form> */}
-
 
             <Form
               name="userForm"

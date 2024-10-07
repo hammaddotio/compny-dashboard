@@ -52,7 +52,7 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/billing" element={<Billing />} />
             <Route path="/my-tickets" element={<MyTickets />} />
-            <Route path="/chat" element={<AdminChat />} />
+            <Route path="/chats" element={<AdminChat />} />
             <Route path="/all-users" element={<AllUserList />} />
 
             {/* User-Only Routes */}

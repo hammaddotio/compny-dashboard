@@ -24,7 +24,7 @@ import EditUserInfo from "../components/EditUserInfo";
 const { Title } = Typography;
 
 
-const PurchaseTable = ({ purchases, setPurchases, userId }) => {
+const PurchaseTable = ({ purchases, setPurchases, userId, userPurchasesCall }) => {
   const columns = [
     {
       title: "SERVICE PLAN",
@@ -76,6 +76,7 @@ const PurchaseTable = ({ purchases, setPurchases, userId }) => {
       );
       const purchases = response.data;
       setPurchases(purchases);
+      userPurchasesCall()
     } catch (error) {
       console.log("Error fetching purchases:", error);
     }
@@ -297,7 +298,7 @@ function Profile() {
 
 
         <div>
-          <PurchaseTable setPurchases={setPurchases} userId={userId} purchases={purchases} />
+          <PurchaseTable userPurchasesCall={userPurchases} setPurchases={setPurchases} userId={userId} purchases={purchases} />
         </div>
       </Card>
     </Main>

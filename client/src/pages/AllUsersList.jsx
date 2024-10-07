@@ -1,162 +1,234 @@
 import React, { useEffect, useState } from 'react';
-import { authHeaders, checkUserRole, GET_USER_TICKETS_API, UPDATE_TICKET_PRIORITY, URL } from '../constant';
 import axios from 'axios';
-import { Table, Typography, Select, Modal, Button } from 'antd';
+import { Table, Typography, Modal, Button, Input, Form, message } from 'antd';
 import Main from './../components/layout/Main';
+import { authHeaders, URL, GET_ALL_USERS_API, DELETE_USER_API, UPDATE_USER_API } from '../constant';
 
 const { Title } = Typography;
-const { Option } = Select;
 
 const AllUserList = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [selectedTicket, setSelectedTicket] = useState(null);
-    const [tickets, setTickets] = useState([])
+    const [isUpdateMode, setIsUpdateMode] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    const userTickets = async () => {
+    // Fetch users
+    const fetchUsers = async () => {
         try {
-            const response = await axios.get(
-                `${URL}${GET_USER_TICKETS_API}/`,
-                authHeaders
-            );
-            const tickets = response.data;
-            setTickets(tickets);
+            const response = await axios.get(`${URL}${GET_ALL_USERS_API}/`, authHeaders);
+            setUsers(Array.isArray(response.data.users) ? response.data.users : []);
         } catch (error) {
-            console.log("Error fetching tickets:", error);
+            console.log("Error fetching users:", error);
         }
     };
 
-    const updateTicketPriority = async (id, newPriority) => {
+    useEffect(() => {
+        fetchUsers();
+    }, []);
+
+    // Delete user
+    const deleteUser = async (id) => {
         try {
-            await axios.patch(`${URL}${UPDATE_TICKET_PRIORITY}/${id}`, { priority: newPriority }, authHeaders);
-            userTickets(); // Refresh tickets after update
+            await axios.delete(`${URL}${DELETE_USER_API}/${id}`, authHeaders);
+            message.success("User deleted successfully");
+            fetchUsers(); // Refresh users list after deletion
         } catch (error) {
-            console.log("Error updating ticket priority:", error);
+            console.log("Error deleting user:", error);
+            message.error("Error deleting user");
         }
     };
 
-    const formatDate = (dateString) => {
-        const options = {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false
-        };
-        return new Date(dateString).toLocaleString('en-US', options);
+    // Update user
+    const updateUser = async (values) => {
+        try {
+            console.log("Updating user with values:", values); // Debug log
+            await axios.patch(`${URL}${UPDATE_USER_API}/${selectedUser._id}`, values, authHeaders);
+            message.success("User updated successfully");
+            fetchUsers(); // Refresh users list after update
+            handleCancel(); // Reset the modal state after updating
+        } catch (error) {
+            console.log("Error updating user:", error);
+            message.error("Error updating user");
+        }
     };
 
-    const showModal = (ticket) => {
-        setSelectedTicket(ticket);
-        setIsModalVisible(true);
+    // Function to show view modal
+    const showViewModal = (record) => {
+        setSelectedUser(record); // Set user for viewing
+        setIsModalVisible(true); // Open modal
+        setIsUpdateMode(false); // Not in update mode
     };
 
+    // Function to show update modal
+    const showUpdateModal = (record) => {
+        setSelectedUser(record); // Set user for updating
+        setIsModalVisible(true); // Open modal
+        setIsUpdateMode(true); // In update mode
+    };
+
+    // Cancel handler to reset states
     const handleCancel = () => {
-        setIsModalVisible(false);
-        setSelectedTicket(null);
+        setIsModalVisible(false); // Close modal
+        setSelectedUser(null); // Reset selected user
+        setIsUpdateMode(false); // Reset update mode
+
+        console.log("After cancel:", {
+            isModalVisible,
+            selectedUser,
+            isUpdateMode
+        });
     };
+
 
     const columns = [
         {
-            title: "SUBJECT",
-            dataIndex: "subject",
-            key: "subject",
+            title: "Client Name",
+            dataIndex: "client_name",
+            key: "client_name",
             width: 200,
-            render: (subject) => (
+            render: (client_name) => (
                 <div className="p-2">
                     <Title level={5} className="text-base md:text-lg">
-                        {subject}
+                        {client_name}
                     </Title>
                 </div>
             ),
         },
         {
-            title: "PRIORITY",
-            dataIndex: "priority",
-            key: "priority",
+            title: "Email",
+            dataIndex: "official_email",
+            key: "official_email",
             width: 200,
-            render: (priority, record) => (
-                <div className="p-2">
-                    <Select
-                        defaultValue={priority}
-                        style={{ width: 120 }}
-                        onChange={(newPriority) => updateTicketPriority(record._id, newPriority)}
-                    >
-                        <Option value="Low">Low</Option>
-                        <Option value="Medium">Medium</Option>
-                        <Option value="High">High</Option>
-                    </Select>
+        },
+        {
+            title: "Phone Number",
+            dataIndex: "phone_number",
+            key: "phone_number",
+            width: 200,
+        },
+        {
+            title: "Action",
+            key: "action",
+            width: 150,
+            render: (text, record) => (
+                <div className="space-x-2">
+                    <Button type="primary" onClick={() => showViewModal(record)}>
+                        View
+                    </Button>
+                    <Button type="default" onClick={() => showUpdateModal(record)}>
+                        Update
+                    </Button>
+                    <Button type="danger" onClick={() => deleteUser(record._id)}>
+                        Delete
+                    </Button>
                 </div>
             ),
         },
-        {
-            title: "CREATED TIME",
-            dataIndex: "createdAt",
-            key: "createdAt",
-            width: 150,
-            render: (createdAt) => (
-                <span className="text-sm md:text-base">
-                    {formatDate(createdAt)}
-                </span>
-            ),
-        },
-        {
-            title: "VIEW",
-            key: "view",
-            width: 100,
-            render: (text, record) => (
-                <Button type="primary" onClick={() => showModal(record)}>
-                    View
-                </Button>
-            ),
-        },
     ];
-
-    useEffect(() => {
-        userTickets();
-    }, []);
 
     return (
         <Main>
             <div className="overflow-x-auto p-4 md:p-6">
                 <Table
                     columns={columns}
-                    dataSource={tickets}
+                    dataSource={users}
                     rowKey={(record) => record._id}
+                    loading={loading}
                     scroll={{ x: 600 }}
                     className="w-full bg-white rounded-lg shadow-sm"
+                    pagination={{ pageSize: 10 }}
                 />
 
                 <Modal
-                    title="Ticket Details"
+                    title={isUpdateMode ? "Update User" : "User Details"}
                     visible={isModalVisible}
                     onCancel={handleCancel}
                     footer={null}
                 >
-                    {selectedTicket && (
-                        <div className="space-y-4 p-4 bg-gray-100 rounded-lg shadow-md">
-                            <p className="text-lg font-semibold">
-                                <span className="text-gray-600">Subject:</span> {selectedTicket.subject}
-                            </p>
-                            <p className="text-lg font-semibold">
-                                <span className="text-gray-600">Description:</span> {selectedTicket.description}
-                            </p>
-                            <p className="text-lg font-semibold">
-                                <span className="text-gray-600">Priority:</span>
-                                <span className={
-                                    `inline-block ml-2 px-2 py-1 rounded-full ${selectedTicket.priority === 'High' ? 'bg-red-500 text-white' :
-                                        selectedTicket.priority === 'Medium' ? 'bg-yellow-500 text-white' : 'bg-green-500 text-white'
-                                    }`
-                                }>
-                                    {selectedTicket.priority}
-                                </span>
-                            </p>
-                            <p className="text-lg font-semibold">
-                                <span className="text-gray-600">Created At:</span> {formatDate(selectedTicket.createdAt)}
-                            </p>
-                        </div>
+
+                    {/* 
+                    <Modal
+                        title={isUpdateMode ? "Update User" : "User Details"}
+                        visible={isModalVisible}
+                        onCancel={handleCancel}
+                        footer={null}
+                    > */}
+                    {selectedUser && (
+                        isUpdateMode ? (
+                            <Form
+                                layout="vertical"
+                                initialValues={selectedUser}
+                                onFinish={updateUser}
+                            >
+                                <Form.Item
+                                    label="Client Name"
+                                    name="client_name"
+                                    rules={[{ required: true, message: 'Please enter client name' }]}
+                                >
+                                    <Input />
+                                </Form.Item>
+
+                                <Form.Item
+                                    label="Company Name"
+                                    name="company_name"
+                                >
+                                    <Input />
+                                </Form.Item>
+
+                                <Form.Item
+                                    label="Official Email"
+                                    name="official_email"
+                                    rules={[{ required: true, type: 'email', message: 'Please enter a valid email' }]}
+                                >
+                                    <Input />
+                                </Form.Item>
+
+                                <Form.Item
+                                    label="Phone Number"
+                                    name="phone_number"
+                                >
+                                    <Input />
+                                </Form.Item>
+
+                                <Form.Item
+                                    label="Address"
+                                    name="address"
+                                >
+                                    <Input />
+                                </Form.Item>
+
+                                <Form.Item
+                                    label="Industry"
+                                    name="industry"
+                                >
+                                    <Input />
+                                </Form.Item>
+
+                                <Button type="primary" htmlType="submit">Update</Button>
+                            </Form>
+                        ) : (
+                            <div className="space-y-4 p-4 bg-gray-100 rounded-lg shadow-md">
+                                <p className="text-lg font-semibold">
+                                    <span className="text-gray-600">Client Name:</span> {selectedUser.client_name}
+                                </p>
+                                <p className="text-lg font-semibold">
+                                    <span className="text-gray-600">Company Name:</span> {selectedUser.company_name || 'N/A'}
+                                </p>
+                                <p className="text-lg font-semibold">
+                                    <span className="text-gray-600">Email:</span> {selectedUser.official_email}
+                                </p>
+                                <p className="text-lg font-semibold">
+                                    <span className="text-gray-600">Phone Number:</span> {selectedUser.phone_number || 'N/A'}
+                                </p>
+                                <p className="text-lg font-semibold">
+                                    <span className="text-gray-600">Address:</span> {selectedUser.address || 'N/A'}
+                                </p>
+                                <p className="text-lg font-semibold">
+                                    <span className="text-gray-600">Industry:</span> {selectedUser.industry || 'N/A'}
+                                </p>
+                            </div>
+                        )
                     )}
                 </Modal>
             </div>

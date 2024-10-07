@@ -190,20 +190,8 @@ function Sidenav({ color }) {
                 <span className="label">Dashboard</span>
               </NavLink>
             </Menu.Item>
-            <Menu.Item key="2">
-              <NavLink to="/purchased-services">
-                <span
-                  className="icon"
-                  style={{
-                    background: page === "purchased-services" ? color : "",
-                  }}
-                >
-                  {tables}
-                </span>
-                <span className="label">Purchased Services</span>
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item key="3">
+
+            {/* <Menu.Item key="3">
               <NavLink to="/billing">
                 <span
                   className="icon"
@@ -215,7 +203,7 @@ function Sidenav({ color }) {
                 </span>
                 <span className="label">Billing</span>
               </NavLink>
-            </Menu.Item>
+            </Menu.Item> */}
 
             <Menu.Item key="30">
               <NavLink to="/tickets">
@@ -230,6 +218,20 @@ function Sidenav({ color }) {
                 <span className="label">Tickets</span>
               </NavLink>
             </Menu.Item>
+            <Menu.Item key="12">
+              <NavLink to="/chats">
+                <span
+                  className="icon"
+                  style={{
+                    background: page === "chats" ? color : "",
+                  }}
+                >
+                  {plan}
+                </span>
+                <span className="label">Chats</span>
+              </NavLink>
+            </Menu.Item>
+
           </>
         }
 
@@ -250,19 +252,34 @@ function Sidenav({ color }) {
         </Menu.Item>
         {
           isLoggedIn && checkUserRole === 'US' && (
-            <Menu.Item key='9'>
-              <NavLink to="/my-tickets">
-                <span
-                  className="icon"
-                  style={{
-                    background: page === "my-tickets" ? color : "",
-                  }}
-                >
-                  {plan}
-                </span>
-                <span className="label">My Tickets</span>
-              </NavLink>
-            </Menu.Item>
+            <>
+              <Menu.Item key="2">
+                <NavLink to="/purchased-services">
+                  <span
+                    className="icon"
+                    style={{
+                      background: page === "purchased-services" ? color : "",
+                    }}
+                  >
+                    {tables}
+                  </span>
+                  <span className="label">Purchased Services</span>
+                </NavLink>
+              </Menu.Item>
+              <Menu.Item key='9'>
+                <NavLink to="/my-tickets">
+                  <span
+                    className="icon"
+                    style={{
+                      background: page === "my-tickets" ? color : "",
+                    }}
+                  >
+                    {plan}
+                  </span>
+                  <span className="label">My Tickets</span>
+                </NavLink>
+              </Menu.Item>
+            </>
           )
         }
 

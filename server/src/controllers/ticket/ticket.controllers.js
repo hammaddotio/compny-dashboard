@@ -27,6 +27,7 @@ export const createTicket = async (req, res) => {
 export const getAllTickets = async (req, res) => {
     try {
         const tickets = await Ticket.find().populate('userId', 'username email'); // Populate user data (assuming you have username and email fields)
+        console.log(tickets)
         res.status(200).json(tickets);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching tickets', error });
@@ -37,7 +38,7 @@ export const getAllTickets = async (req, res) => {
 export const getUserTickets = async (req, res) => {
     try {
         // Get userId from query parameters
-        const { userId } = req.params;
+        const userId = req.user_id;
 
         let tickets;
 
