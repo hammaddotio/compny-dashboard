@@ -102,7 +102,7 @@ function Main({ children, loading = '', error = '' }) {
           loading ? <Loading /> : error ? <Error error={error} /> : <Content className="content-ant">{children}</Content>
         }
 
-        <Footer />
+        {/* <Footer /> */}
       </Layout>
     </Layout>
   );

@@ -69,8 +69,8 @@ const AdminChat = () => {
         try {
             const { data } = await axios.get(`${URL}${GET_MESSAGES_API}/${selectedUser._id}`, authHeaders);
             // Sort messages by createdAt in descending order
-            const sortedMessages = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            setMessages(sortedMessages);
+            // const sortedMessages = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            setMessages(data);
             // scrollToBottom();
         } catch (error) {
             message.error('Failed to fetch messages.');
@@ -85,7 +85,7 @@ const AdminChat = () => {
             // Sort recent chats by createdAt in descending order
             const sortedRecentChats = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             setRecentChats(sortedRecentChats);
-            fetchMessages()
+            // fetchMessages()
         } catch (error) {
             message.error('Failed to fetch recent chats.');
         }
@@ -114,7 +114,8 @@ const AdminChat = () => {
         setMessages((prevMessages) => [...prevMessages, messageData]);
         setUserMessage('');
 
-        await fetchMessages(); // Fetch all messages after sending
+        // await fetchMessages(); // Fetch all messages after sending
+        await fetchRecentChats()
         scrollToBottom(); // Scroll to bottom if user is at the bottom
     };
 
@@ -163,8 +164,8 @@ const AdminChat = () => {
                                     onClick={() => setSelectedUser(user)}
                                 >
                                     <List.Item.Meta
-                                        avatar={<Avatar>{user.client_name.charAt(0)}</Avatar>}
-                                        title={user.client_name}
+                                        avatar={<Avatar>{!user.client_name && user.username.charAt(0)}</Avatar>}
+                                        title={!user.client_name && user.username}
                                     />
                                 </List.Item>
                             )}
@@ -190,18 +191,21 @@ const AdminChat = () => {
                             ) : (
                                 <>
                                     {/* Combine and sort messages and recent chats */}
-                                    {[...messages, ...recentChats]
+                                    {[...recentChats]
                                         .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)) // Sort in ascending order
-                                        .map((msg, index) => (
-                                            <div key={index} className={`message flex ${msg?.sender?._id === ADMIN_ID ? 'justify-end' : 'justify-start'}`}>
-                                                <div className={`message-content max-w-xs p-2 rounded-lg mb-2 ${msg?.sender?._id === ADMIN_ID ? 'bg-blue-200 text-right' : 'bg-gray-200 text-left'}`}>
-                                                    <p>{msg?.message}</p>
-                                                    <small className={`text-xs ${msg?.sender?._id === ADMIN_ID ? 'text-gray-600' : 'text-gray-800'}`}>
-                                                        {renderTime(msg?.createdAt)} - {msg?.sender?._id === ADMIN_ID ? 'You' : selectedUser.client_name}
-                                                    </small>
+                                        .map((msg, index) => {
+                                            console.log(msg)
+                                            return (
+                                                <div key={index} className={`message flex ${msg?.sender?._id === ADMIN_ID ? 'justify-end' : 'justify-start'}`}>
+                                                    <div className={`message-content max-w-xs p-2 rounded-lg mb-2 ${msg?.sender?._id === ADMIN_ID ? 'bg-blue-200 text-right' : 'bg-gray-200 text-left'}`}>
+                                                        <p>{msg?.message}</p>
+                                                        <small className={`text-xs ${msg?.sender?._id === ADMIN_ID ? 'text-gray-600' : 'text-gray-800'}`}>
+                                                            {renderTime(msg?.createdAt)} - {msg?.sender?._id === ADMIN_ID ? 'You' : selectedUser.client_name}
+                                                        </small>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            )
+                                        })}
                                 </>
                             )}
                         </div>

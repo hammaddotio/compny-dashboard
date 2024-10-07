@@ -1,6 +1,6 @@
 export const URL = 'http://127.0.0.1:3000'
 // export const URL = 'https://sexual-maressa-mady-1d683dc3.koyeb.app'
-export const ADMIN_ID = '66fe9208d479d7c40fc55792'
+export const ADMIN_ID = '6703afebb3d450908bb6fa0a'
 
 export const REGISTER_URL = '/api/register'
 export const LOGIN_URL = '/api/login'

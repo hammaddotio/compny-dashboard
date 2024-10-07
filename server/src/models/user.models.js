@@ -13,14 +13,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         // required: false // Optional
     },
-    official_email: {
-        type: String,
-        // required: true,
-        unique: true // Assuming you want unique official emails
-    },
     personal_email: {
         type: String,
-        required: true // Making personal_email required
+        required: true, // Making personal_email required
+        unique: true
     },
     phone_number: {
         type: String,
