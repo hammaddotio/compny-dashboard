@@ -92,8 +92,8 @@ const PaymentForm = () => {
 
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <div className="flex flex-row bg-white shadow-lg rounded-lg overflow-hidden w-full md:w-4/5 lg:w-3/5">
+        <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
+            <div className="flex flex-col md:flex-row bg-white shadow-lg rounded-lg overflow-hidden w-full md:w-4/5 lg:w-3/5">
                 {/* Left Side - Plan Details */}
                 <div className="flex-1 p-6">
                     <h2 className="text-2xl font-semibold mb-4">Plan Details</h2>
@@ -117,7 +117,7 @@ const PaymentForm = () => {
                 </div>
 
                 {/* Right Side - Payment Form Card */}
-                <div className="flex-shrink-0 w-80 p-6 bg-white shadow-md rounded-lg border border-gray-300">
+                <div className="flex-shrink-0 w-full md:w-80 p-6 bg-white shadow-md rounded-lg border border-gray-300 mt-4 md:mt-0">
                     <h2 className="text-2xl font-semibold mb-4 text-center">Payment Form</h2>
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
@@ -141,6 +141,7 @@ const PaymentForm = () => {
                 </div>
             </div>
         </div>
+
     );
 };
 
