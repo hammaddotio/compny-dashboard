@@ -148,9 +148,9 @@ const AdminChat = () => {
 
     return (
         <Main>
-            <div className="admin-dashboard flex flex-wrap">
+            <div className="admin-dashboard flex flex-wrap sm:flex-nowrap">
                 {/* Users List */}
-                <div className="user-list w-1/4 pr-4">
+                <div className="user-list w-full sm:w-1/4 pr-0 sm:pr-4 mb-4 sm:mb-0">
                     <Title level={3} className="mb-4">Users with Purchased Plans</Title>
                     {loadingUsers ? (
                         <Spin tip="Loading users..." />
@@ -177,7 +177,7 @@ const AdminChat = () => {
 
                 {/* Chat Section */}
                 {selectedUser && (
-                    <div className="user-chat w-3/4">
+                    <div className="user-chat w-full sm:w-3/4">
                         <div className="chat-header flex justify-between items-center mb-4">
                             <Title level={4}>{selectedUser.client_name}</Title>
                             <Button type="danger" onClick={() => setSelectedUser(null)}>
@@ -185,31 +185,26 @@ const AdminChat = () => {
                             </Button>
                         </div>
 
-                        <div ref={chatboxRef} className="chat-messages overflow-auto max-h-96 border rounded-md p-4 bg-gray-100 mb-4">
+                        <div ref={chatboxRef} className="chat-messages overflow-auto max-h-64 sm:max-h-96 border rounded-md p-4 bg-gray-100 mb-4">
                             {loadingMessages ? (
                                 <Spin tip="Loading messages..." />
                             ) : (
                                 <>
-                                    {/* Combine and sort messages and recent chats */}
                                     {[...recentChats]
-                                        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)) // Sort in ascending order
-                                        .map((msg, index) => {
-                                            console.log(msg)
-                                            return (
-                                                <div key={index} className={`message flex ${msg?.sender?._id === ADMIN_ID ? 'justify-end' : 'justify-start'}`}>
-                                                    <div className={`message-content max-w-xs p-2 rounded-lg mb-2 ${msg?.sender?._id === ADMIN_ID ? 'bg-blue-200 text-right' : 'bg-gray-200 text-left'}`}>
-                                                        <p>{msg?.message}</p>
-                                                        <small className={`text-xs ${msg?.sender?._id === ADMIN_ID ? 'text-gray-600' : 'text-gray-800'}`}>
-                                                            {renderTime(msg?.createdAt)} - {msg?.sender?._id === ADMIN_ID ? 'You' : selectedUser.client_name}
-                                                        </small>
-                                                    </div>
+                                        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+                                        .map((msg, index) => (
+                                            <div key={index} className={`message flex ${msg?.sender?._id === ADMIN_ID ? 'justify-end' : 'justify-start'}`}>
+                                                <div className={`message-content max-w-xs p-2 rounded-lg mb-2 ${msg?.sender?._id === ADMIN_ID ? 'bg-blue-200 text-right' : 'bg-gray-200 text-left'}`}>
+                                                    <p>{msg?.message}</p>
+                                                    <small className={`text-xs ${msg?.sender?._id === ADMIN_ID ? 'text-gray-600' : 'text-gray-800'}`}>
+                                                        {renderTime(msg?.createdAt)} - {msg?.sender?._id === ADMIN_ID ? 'You' : selectedUser.client_name}
+                                                    </small>
                                                 </div>
-                                            )
-                                        })}
+                                            </div>
+                                        ))}
                                 </>
                             )}
                         </div>
-
 
                         <div className="chat-input flex mb-4">
                             <Input
@@ -244,6 +239,7 @@ const AdminChat = () => {
                 )}
             </div>
         </Main>
+
     );
 };
 

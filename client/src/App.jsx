@@ -19,6 +19,7 @@ import PaymentStripe from './components/PaymentStripe';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { STRIPE_PUBLISH_KEY } from './constant';
+import AllUserList from './pages/AllUsersList';
 
 // Load Stripe with the publishable key
 const stripePromise = loadStripe(STRIPE_PUBLISH_KEY);
@@ -39,6 +40,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/chats" element={<AdminChat />} />
           <Route path="/tickets" element={<TicketsTableAdmin />} />
+          <Route path="/all-users" element={<AllUserList />} />
         </Route>
 
         {/* User-Only Routes */}

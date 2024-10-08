@@ -218,6 +218,8 @@ function Sidenav({ color }) {
                 <span className="label">Tickets</span>
               </NavLink>
             </Menu.Item>
+
+
             <Menu.Item key="12">
               <NavLink to="/chats">
                 <span
@@ -229,6 +231,20 @@ function Sidenav({ color }) {
                   {plan}
                 </span>
                 <span className="label">Chats</span>
+              </NavLink>
+            </Menu.Item>
+
+            <Menu.Item key="20">
+              <NavLink to="/all-users">
+                <span
+                  className="icon"
+                  style={{
+                    background: page === "all-users" ? color : "",
+                  }}
+                >
+                  {billing}
+                </span>
+                <span className="label">Users</span>
               </NavLink>
             </Menu.Item>
 

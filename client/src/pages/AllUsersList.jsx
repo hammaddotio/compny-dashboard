@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Typography, Modal, Button, Input, Form, message } from 'antd';
+import { Table, Typography, Modal, Button, Input, Form, message, Tooltip } from 'antd';
 import Main from './../components/layout/Main';
 import { authHeaders, URL, GET_ALL_USERS_API, DELETE_USER_API, UPDATE_USER_API } from '../constant';
 
@@ -16,10 +16,14 @@ const AllUserList = () => {
     // Fetch users
     const fetchUsers = async () => {
         try {
+            setLoading(true)
             const response = await axios.get(`${URL}${GET_ALL_USERS_API}/`, authHeaders);
+            console.log(response.data.users)
             setUsers(Array.isArray(response.data.users) ? response.data.users : []);
+            setLoading(false)
         } catch (error) {
             console.log("Error fetching users:", error);
+            setLoading(false)
         }
     };
 
@@ -113,22 +117,29 @@ const AllUserList = () => {
             width: 150,
             render: (text, record) => (
                 <div className="space-x-2">
-                    <Button type="primary" onClick={() => showViewModal(record)}>
-                        View
-                    </Button>
-                    <Button type="default" onClick={() => showUpdateModal(record)}>
-                        Update
-                    </Button>
-                    <Button type="danger" onClick={() => deleteUser(record._id)}>
-                        Delete
-                    </Button>
+                    <Tooltip title="View Client">
+                        <Button type="primary" onClick={() => showViewModal(record)}>
+                            View
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title="Update Client">
+                        <Button type="default" onClick={() => showUpdateModal(record)}>
+                            Update
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title="Delete Client">
+                        <Button type="danger" onClick={() => deleteUser(record._id)}>
+                            Delete
+                        </Button>
+                    </Tooltip>
                 </div>
             ),
         },
     ];
 
+
     return (
-        <Main>
+        <Main loading={loading}>
             <div className="overflow-x-auto p-4 md:p-6">
                 <Table
                     columns={columns}
