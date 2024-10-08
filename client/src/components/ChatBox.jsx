@@ -109,7 +109,6 @@ const UserChatBox = () => {
                                 </span>
                             </p>
                         </p>
-
                     </div>
                 </div>
             )
@@ -128,8 +127,8 @@ const UserChatBox = () => {
             </div>
 
             {isChatboxOpen && (
-                <div id="chat-container" className="fixed bottom-16 right-4 w-96">
-                    <div className="bg-white shadow-md rounded-lg max-w-lg w-full">
+                <div id="chat-container" className="fixed bottom-16 right-4 w-full max-w-sm sm:max-w-md lg:max-w-lg">
+                    <div className="bg-white shadow-md rounded-lg w-full">
                         <div className="p-4 border-b bg-blue-500 text-white rounded-t-lg flex justify-between items-center">
                             <p className="text-lg font-semibold">Chat with Admin</p>
                             <button onClick={toggleChatbox} className="text-gray-300 hover:text-gray-400 focus:outline-none focus:text-gray-400">
@@ -141,22 +140,23 @@ const UserChatBox = () => {
                             {renderRecentChats()} {/* Render recent chats */}
                         </div>
 
-                        <div className="p-4 border-t flex">
+                        <div className="p-4 border-t flex flex-col sm:flex-row">
                             <input
                                 value={userMessage}
                                 onChange={(e) => setUserMessage(e.target.value)}
                                 onKeyUp={(e) => { if (e.key === 'Enter') handleSendMessage(); }}
                                 type="text"
                                 placeholder="Type a message"
-                                className="w-full px-3 py-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
-                            <button onClick={handleSendMessage} className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition duration-300">Send</button>
+                            <button onClick={handleSendMessage} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 mt-2 sm:mt-0 sm:ml-2">Send</button>
                         </div>
                     </div>
                 </div>
             )}
         </div>
     );
+
 };
 
 export default UserChatBox;

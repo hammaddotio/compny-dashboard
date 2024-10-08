@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import axios from 'axios';
 import { authHeaders, checkToken, PAYMENT_URL, URL } from '../constant';
@@ -11,57 +11,42 @@ const PaymentForm = () => {
     const stripe = useStripe();
     const elements = useElements();
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
 
-    console.log(selectedPlanForPayment)
     useEffect(() => {
-        // console.log(selectedPlanForPayment);
-        // setSelectedPlanForPayment(selectedPlanForPayment);
         const storedPlan = localStorage.getItem('selectedPlan');
         if (storedPlan) {
             setSelectedPlanForPayment(JSON.parse(storedPlan));
         }
-    }, []);
+    }, [setSelectedPlanForPayment]);
 
-    // Fetch and set the selected plan when the component mounts
-    // useEffect(() => {
-    //     const storedPlan = localStorage.getItem('selectedPlan');
-    //     if (storedPlan) {
-    //         setSelectedPlanForPayment(JSON.parse(storedPlan));
-    //     }
-    // }, []);
-
-    console.log(selectedPlanForPayment)
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setIsLoading(true);
 
         if (!selectedPlanForPayment || !selectedPlanForPayment.price) {
             message.error("Selected plan or price is missing.");
+            setIsLoading(false);
             return;
         }
 
-        const amountInCents = parseFloat(selectedPlanForPayment.price) * 100
+        const amountInCents = parseFloat(selectedPlanForPayment.price) * 100;
+        const token = localStorage.getItem('token');
+        const planType = selectedPlanForPayment.name.split(' ')[0].toLowerCase();
 
-        // Retrieve user ID from local storage
-        const token = localStorage.getItem('token'); // Ensure this key matches how you store user data
-
-        const planType = selectedPlanForPayment.name.split(' ')[0].toLowerCase()
-        console.log(selectedPlanForPayment)
         try {
-            // Step 1: Create the payment intent
             const { data } = await axios.post(`${URL}${PAYMENT_URL}`, {
                 amount: amountInCents,
-                isSubscription: true, // Indicate this is a subscription
-                token: token, // Use the retrieved user ID
-                planType: planType,// Pass the plan ID for subscription
+                isSubscription: true,
+                token: token,
+                planType: planType,
                 servicePlan: selectedPlanForPayment._id
             }, {
                 headers: {
                     Authorization: checkToken
                 }
             });
-            console.log(data)
 
-            // Step 2: Confirm the card payment using the client secret
             const result = await stripe.confirmCardPayment(data.clientSecret, {
                 payment_method: {
                     card: elements.getElement(CardElement),
@@ -73,23 +58,23 @@ const PaymentForm = () => {
                 message.error(result.error.message);
             } else {
                 if (result.paymentIntent.status === 'succeeded') {
-                    // Payment successful, handle subscription creation here
-                    const subscriptionId = data.subscriptionId; // Get subscription ID from response
+                    const subscriptionId = data.subscriptionId;
                     if (subscriptionId) {
-                        message.success(`Subscription created successfully!`);
-                        localStorage.removeItem('selectedPlan')
+                        message.success('Subscription created successfully!');
+                        localStorage.removeItem('selectedPlan');
                     } else {
                         message.success('Payment successful! You are now subscribed.');
                     }
+                    navigate('/plans');
                 }
             }
-            navigate('/plans'); // Redirect to the dashboard or another page
         } catch (error) {
             console.error('Error processing payment:', error);
             message.error('There was an issue with the payment. Please try again.');
+        } finally {
+            setIsLoading(false);
         }
     };
-
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
@@ -132,16 +117,15 @@ const PaymentForm = () => {
                         </div>
                         <button
                             type="submit"
-                            disabled={!stripe}
-                            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            disabled={!stripe || isLoading}
+                            className={`w-full py-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${isLoading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'}`}
                         >
-                            Pay
+                            {isLoading ? 'Processing...' : 'Pay'}
                         </button>
                     </form>
                 </div>
             </div>
         </div>
-
     );
 };
 
